@@ -1,6 +1,7 @@
 package discord.podongbot.response;
 
 import discord.podongbot.channel.ChannelManager;
+import discord.podongbot.music.PlayerManager;
 import discord.podongbot.voice.BotVoiceControl;
 import discord.podongbot.volume.VolumeControl;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -34,6 +35,9 @@ public class SlashCommandReaction extends ListenerAdapter {
             case "퇴장":
                 BotVoiceControl.leaveVoiceChannel(event);
                 break;
+            case "대기열":
+                PlayerManager.handleQueueCommand(event);
+                break;
         }
     }
 
@@ -55,6 +59,9 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("퇴장", "봇을 현재 음성 채널에서 퇴장시킵니다.")
+        );
+        commandDatas.add(
+                Commands.slash("대기열", "현재 대기열을 보여줍니다.")
         );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }

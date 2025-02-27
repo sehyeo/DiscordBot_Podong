@@ -10,13 +10,15 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 // 서버별 GuildMusicManager를 중앙에서 관리
 public class PlayerManager {
@@ -148,5 +150,24 @@ public class PlayerManager {
         }
         String link = "ytsearch: " + musicQuery;
         PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link);
+    }
+
+    public static void handleQueueCommand(SlashCommandInteractionEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+        List<AudioTrack> queue = musicManager.scheduler.getQueue();
+
+        if (queue.isEmpty()) {
+            event.getChannel().sendMessage("대기열이 비어 있습니다.").queue();
+            return;
+        }
+
+        String queueList = queue.stream()
+                .map(track -> String.format("- **%s** (by %s)", track.getInfo().title, track.getInfo().author))
+                .collect(Collectors.joining("\n"));
+
+        event.getChannel().sendMessage("현재 대기열:\n" + queueList).queue();
     }
 }
