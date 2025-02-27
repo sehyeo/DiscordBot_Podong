@@ -1,4 +1,4 @@
-package org.github.podong.bot;
+package discord.podongbot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

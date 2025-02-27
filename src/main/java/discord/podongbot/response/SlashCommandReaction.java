@@ -1,12 +1,12 @@
-package org.github.podong.bot.response;
+package discord.podongbot.response;
 
+import discord.podongbot.volume.VolumeControl;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import org.github.podong.bot.volume.VolumeControl;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,10 @@
-package org.github.podong.bot.volume;
+package discord.podongbot.volume;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import discord.podongbot.music.GuildMusicManager;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.github.podong.bot.music.GuildMusicManager;
-import org.github.podong.bot.music.PlayerManager;
+import discord.podongbot.music.PlayerManager;
 
 // 음악 볼륨을 조절하는 클래스
 public class VolumeControl {

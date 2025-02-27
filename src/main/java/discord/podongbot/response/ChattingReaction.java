@@ -1,10 +1,10 @@
-package org.github.podong.bot.response;
+package discord.podongbot.response;
 
+import discord.podongbot.music.PlayerManager;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
-import org.github.podong.bot.music.PlayerManager;
 
 public class ChattingReaction extends ListenerAdapter {
 

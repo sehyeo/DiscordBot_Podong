@@ -1,11 +1,11 @@
-package org.github.podong.bot;
+package discord.podongbot;
 
+import discord.podongbot.activity.BotActivityManager;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import org.github.podong.bot.activity.BotActivityManager;
-import org.github.podong.bot.token.BotTokenManager;
-import org.github.podong.bot.response.ChattingReaction;
-import org.github.podong.bot.response.SlashCommandReaction;
+import discord.podongbot.token.BotTokenManager;
+import discord.podongbot.response.ChattingReaction;
+import discord.podongbot.response.SlashCommandReaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -48,7 +48,7 @@ public class DiscordBot implements CommandLineRunner {
                             new SlashCommandReaction())
                     .build();
 
-            System.out.println("✅ 디스코드 봇 실행 완료!");
+            System.out.println("⭕ 디스코드 봇 실행 완료!");
         } catch (Exception e) {
             System.out.println("❌ 봇 실행 중 오류 발생: " + e.getMessage());
         }
