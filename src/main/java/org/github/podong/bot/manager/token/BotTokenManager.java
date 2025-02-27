@@ -1,4 +1,4 @@
-package org.github.podong.bot;
+package org.github.podong.bot.manager.token;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

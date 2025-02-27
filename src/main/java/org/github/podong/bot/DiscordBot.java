@@ -1,7 +1,8 @@
 package org.github.podong.bot;
 
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Activity;
+import org.github.podong.bot.manager.activity.BotActivityManager;
+import org.github.podong.bot.manager.token.BotTokenManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
