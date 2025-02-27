@@ -1,5 +1,6 @@
 package discord.podongbot.response;
 
+import discord.podongbot.channel.ChannelManager;
 import discord.podongbot.voice.BotVoiceControl;
 import discord.podongbot.volume.VolumeControl;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -25,7 +26,7 @@ public class SlashCommandReaction extends ListenerAdapter {
                 VolumeControl.handleVolumeCommand(event);
                 break;
             case "채널설정":
-                VolumeControl.handleChannelSetupCommand(event);
+                ChannelManager.handleChannelSetupCommand(event);
                 break;
             case "입장":
                 BotVoiceControl.joinVoiceChannel(event);
