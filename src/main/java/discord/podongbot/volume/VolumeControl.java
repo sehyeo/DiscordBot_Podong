@@ -3,13 +3,19 @@ package discord.podongbot.volume;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import discord.podongbot.music.GuildMusicManager;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import discord.podongbot.music.PlayerManager;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 // 음악 볼륨을 조절하는 클래스
 public class VolumeControl {
     private final AudioPlayer audioPlayer;
     private int volume; // 볼륨 (0~100 범위)
+    private static final Map<Long, Long> guildChannelMap = new HashMap<>(); // 길드별 전용 채널 저장
 
     public VolumeControl(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
@@ -51,5 +57,47 @@ public class VolumeControl {
         VolumeControl volumeControl = getVolumeControl(guild);
         volumeControl.setVolume(volume);
         event.reply("볼륨이 " + volume + "%로 설정되었습니다.").queue();
+    }
+
+    public static void handleChannelSetupCommand(SlashCommandInteractionEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) {
+            event.reply("이 명령어는 서버에서만 사용할 수 있습니다.").setEphemeral(true).queue();
+            return;
+        }
+
+        guild.createTextChannel("포동봇-음악채널").queue(channel -> {
+            guildChannelMap.put(guild.getIdLong(), channel.getIdLong());
+            event.reply("전용 음악 채널이 생성되었습니다: " + channel.getAsMention()).queue();
+        });
+    }
+
+    public static void handleAutoPlayMusic(MessageReceivedEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        // 봇의 메시지는 무시
+        if (event.getAuthor().isBot()) return;
+
+        Long channelId = guildChannelMap.get(guild.getIdLong());
+        if (channelId == null || event.getChannel().getIdLong() != channelId) return;
+
+        String musicQuery = event.getMessage().getContentRaw();
+        if (musicQuery.isEmpty()) return;
+
+
+        // 사용자가 음성 채널에 있는지 확인
+        if (!event.getMember().getVoiceState().inAudioChannel()) {
+            event.getChannel().sendMessage("음성 채널에 먼저 접속해주세요!").queue();
+            return;
+        }
+
+        // 봇이 음성 채널에 없으면 자동으로 연결
+        if (!guild.getAudioManager().isConnected()) {
+            VoiceChannel userChannel = (VoiceChannel) event.getMember().getVoiceState().getChannel();
+            guild.getAudioManager().openAudioConnection(userChannel);
+        }
+        String link = "ytsearch: " + musicQuery;
+        PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link, event.getMember());
     }
 }
