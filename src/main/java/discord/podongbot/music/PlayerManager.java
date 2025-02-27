@@ -56,17 +56,26 @@ public class PlayerManager {
         });
     }
 
-    public void loadAndPlay(TextChannel textChannel, String trackURL, Member client) {
+    public void loadAndPlay(TextChannel textChannel, String trackURL) {
         final GuildMusicManager musicManager = this.getMusicManager(textChannel.getGuild());
+        boolean isPlaying = musicManager.audioPlayer.getPlayingTrack() != null;
+
         this.audioPlayerManager.loadItemOrdered(musicManager, trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
-                // 트랙 대기열 추가
                 musicManager.scheduler.queue(audioTrack);
-                textChannel.sendMessageFormat("재생 중인 곡: `%s` (by `%s`)",
-                        audioTrack.getInfo().title,
-                        audioTrack.getInfo().author
-                ).queue();
+                // 트랙 대기열 추가
+                if (isPlaying) {
+                    textChannel.sendMessageFormat("대기열에 추가됨: **%s** (by %s)",
+                            audioTrack.getInfo().title,
+                            audioTrack.getInfo().author
+                    ).queue();
+                } else {
+                    textChannel.sendMessageFormat("재생 중인 곡: **%s** (by %s)",
+                            audioTrack.getInfo().title,
+                            audioTrack.getInfo().author
+                    ).queue();
+                }
             }
 
             @Override
@@ -77,11 +86,17 @@ public class PlayerManager {
                         : audioPlaylist.getTracks().get(0);
 
                 musicManager.scheduler.queue(firstTrack);
-                textChannel.sendMessageFormat(
-                        "재생 중인 곡: `%s` (by `%s`)",
-                        firstTrack.getInfo().title,
-                        firstTrack.getInfo().author
-                ).queue();
+                if (isPlaying) {
+                    textChannel.sendMessageFormat("대기열에 추가됨: **%s** (by %s)",
+                            firstTrack.getInfo().title,
+                            firstTrack.getInfo().author
+                    ).queue();
+                } else {
+                    textChannel.sendMessageFormat("재생 중인 곡: **%s** (by %s)",
+                            firstTrack.getInfo().title,
+                            firstTrack.getInfo().author
+                    ).queue();
+                }
             }
 
             @Override
@@ -115,8 +130,6 @@ public class PlayerManager {
         if (musicChannel == null || event.getChannel().getIdLong() != musicChannel.getIdLong()) return;
 
         String musicQuery = event.getMessage().getContentRaw();
-        System.out.println("입력된 음악 제목: " + musicQuery); // 디버깅 출력
-
         if (musicQuery.isEmpty()) {
             event.getChannel().sendMessage("검색할 노래 제목을 입력해주세요!").queue();
             return;
@@ -134,6 +147,6 @@ public class PlayerManager {
             guild.getAudioManager().openAudioConnection(userChannel);
         }
         String link = "ytsearch: " + musicQuery;
-        PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link, event.getMember());
+        PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link);
     }
 }
