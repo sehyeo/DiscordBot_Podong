@@ -2,8 +2,8 @@ package org.github.podong.bot;
 
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import org.github.podong.bot.manager.activity.BotActivityManager;
-import org.github.podong.bot.manager.token.BotTokenManager;
+import org.github.podong.bot.activity.BotActivityManager;
+import org.github.podong.bot.token.BotTokenManager;
 import org.github.podong.bot.response.ChattingReaction;
 import org.github.podong.bot.response.SlashCommandReaction;
 import org.springframework.beans.factory.annotation.Autowired;
