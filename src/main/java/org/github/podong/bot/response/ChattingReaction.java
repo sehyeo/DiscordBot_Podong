@@ -14,18 +14,9 @@ public class ChattingReaction extends ListenerAdapter {
         String[] parts = msg.split(" ", 2);
 
         switch(parts[0]) {
-            case "ping" :
-            case "핑" :
-                event.getChannel().sendMessage("Pong!").queue();
-                break;
-
-            case "대답" :
-            case "reply" :
-                event.getMessage().reply("Reply!").queue();
-                break;
-
-            case "노래" :
-            case "play" :
+            case "!노래" :
+            case "!재생" :
+            case "!play" :
                 playMusic(event, parts[1]);
                 break;
         }
@@ -33,7 +24,7 @@ public class ChattingReaction extends ListenerAdapter {
 
     public void playMusic(MessageReceivedEvent event, String text) {
         if(!event.getMember().getVoiceState().inAudioChannel()) {
-            event.getChannel().sendMessage("소속해 있는 보이스 채널이 없습니다.").queue();
+            event.getChannel().sendMessage("소속해 있는 음성채널이 없습니다.").queue();
             return;
         }
 
