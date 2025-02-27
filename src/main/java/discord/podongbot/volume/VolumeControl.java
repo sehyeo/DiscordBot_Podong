@@ -3,6 +3,7 @@ package discord.podongbot.volume;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import discord.podongbot.music.GuildMusicManager;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import discord.podongbot.music.PlayerManager;
@@ -66,6 +67,14 @@ public class VolumeControl {
             return;
         }
 
+        // 서버에서 "포동봇-음악채널"이 이미 존재하는지 확인
+        for (TextChannel channel : guild.getTextChannels()) {
+            if (channel.getName().equalsIgnoreCase("포동봇-음악채널")) {
+                event.reply("이미 전용 음악 채널이 설정되어 있습니다: " + channel.getAsMention()).queue();
+                return;
+            }
+        }
+
         guild.createTextChannel("포동봇-음악채널").queue(channel -> {
             guildChannelMap.put(guild.getIdLong(), channel.getIdLong());
             event.reply("전용 음악 채널이 생성되었습니다: " + channel.getAsMention()).queue();
@@ -79,12 +88,24 @@ public class VolumeControl {
         // 봇의 메시지는 무시
         if (event.getAuthor().isBot()) return;
 
-        Long channelId = guildChannelMap.get(guild.getIdLong());
-        if (channelId == null || event.getChannel().getIdLong() != channelId) return;
+        TextChannel musicChannel = null;
+        for (TextChannel channel : guild.getTextChannels()) {
+            if (channel.getName().equalsIgnoreCase("포동봇-음악채널")) {
+                musicChannel = channel;
+                break;
+            }
+        }
+
+        // 전용 채널이 없으면 무시
+        if (musicChannel == null || event.getChannel().getIdLong() != musicChannel.getIdLong()) return;
 
         String musicQuery = event.getMessage().getContentRaw();
-        if (musicQuery.isEmpty()) return;
+        System.out.println("입력된 음악 제목: " + musicQuery); // 디버깅 출력
 
+        if (musicQuery.isEmpty()) {
+            event.getChannel().sendMessage("검색할 노래 제목을 입력해주세요!").queue();
+            return;
+        }
 
         // 사용자가 음성 채널에 있는지 확인
         if (!event.getMember().getVoiceState().inAudioChannel()) {
