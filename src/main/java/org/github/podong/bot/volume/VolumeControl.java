@@ -41,14 +41,20 @@ public class VolumeControl {
             return;
         }
 
-        String volumeArg = event.getOption("value") != null ? event.getOption("value").getAsString() : "";
-        try {
-            int volume = Integer.parseInt(volumeArg);
-            VolumeControl volumeControl = getVolumeControl(guild);
-            volumeControl.setVolume(volume);
-            event.reply("볼륨이 " + volume + "%로 설정되었습니다.").queue();
-        } catch (NumberFormatException e) {
-            event.reply("올바른 숫자를 입력해주세요 (0~100). 예: `/volume 50`").setEphemeral(true).queue();
+        if (event.getOption("value") == null) {
+            event.reply("볼륨 값을 입력해주세요. 예: `/volume 50`").setEphemeral(true).queue();
+            return;
         }
+
+        int volume = event.getOption("value").getAsInt();
+
+        if (volume < 0 || volume > 100) {
+            event.reply("올바른 숫자를 입력해주세요 (0~100). 예: `/volume 50`").setEphemeral(true).queue();
+            return;
+        }
+
+        VolumeControl volumeControl = getVolumeControl(guild);
+        volumeControl.setVolume(volume);
+        event.reply("볼륨이 " + volume + "%로 설정되었습니다.").queue();
     }
 }
