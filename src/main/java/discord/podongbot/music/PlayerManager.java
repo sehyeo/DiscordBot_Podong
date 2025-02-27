@@ -12,6 +12,8 @@ import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,5 +94,46 @@ public class PlayerManager {
                 textChannel.sendMessage("재생할 수 없습니다. " +  e.getMessage()).queue();
             }
         });
+    }
+
+    public static void handleAutoPlayMusic(MessageReceivedEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        // 봇의 메시지는 무시
+        if (event.getAuthor().isBot()) return;
+
+        TextChannel musicChannel = null;
+        for (TextChannel channel : guild.getTextChannels()) {
+            if (channel.getName().equalsIgnoreCase("포동봇-음악채널")) {
+                musicChannel = channel;
+                break;
+            }
+        }
+
+        // 전용 채널이 없으면 무시
+        if (musicChannel == null || event.getChannel().getIdLong() != musicChannel.getIdLong()) return;
+
+        String musicQuery = event.getMessage().getContentRaw();
+        System.out.println("입력된 음악 제목: " + musicQuery); // 디버깅 출력
+
+        if (musicQuery.isEmpty()) {
+            event.getChannel().sendMessage("검색할 노래 제목을 입력해주세요!").queue();
+            return;
+        }
+
+        // 사용자가 음성 채널에 있는지 확인
+        if (!event.getMember().getVoiceState().inAudioChannel()) {
+            event.getChannel().sendMessage("음성 채널에 먼저 접속해주세요!").queue();
+            return;
+        }
+
+        // 봇이 음성 채널에 없으면 자동으로 연결
+        if (!guild.getAudioManager().isConnected()) {
+            VoiceChannel userChannel = (VoiceChannel) event.getMember().getVoiceState().getChannel();
+            guild.getAudioManager().openAudioConnection(userChannel);
+        }
+        String link = "ytsearch: " + musicQuery;
+        PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link, event.getMember());
     }
 }
