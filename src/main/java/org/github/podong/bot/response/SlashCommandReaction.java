@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import org.github.podong.bot.volume.VolumeControl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,9 @@ public class SlashCommandReaction extends ListenerAdapter {
             case "reply":
                 event.reply("**Reply!**").queue();
                 break;
+            case "volume":
+                VolumeControl.handleVolumeCommand(event);
+                break;
         }
     }
 
@@ -31,6 +35,9 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("reply", "Reply를 해줍니다.")
+        );
+        commandDatas.add(
+                Commands.slash("volume", "볼륨을 조절합니다.")
         );
 
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
