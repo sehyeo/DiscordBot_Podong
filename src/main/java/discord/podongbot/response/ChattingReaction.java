@@ -1,6 +1,7 @@
 package discord.podongbot.response;
 
 import discord.podongbot.music.PlayerManager;
+import discord.podongbot.volume.VolumeControl;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -12,6 +13,8 @@ public class ChattingReaction extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         String msg = event.getMessage().getContentRaw();
         String[] parts = msg.split(" ", 2);
+
+        VolumeControl.handleAutoPlayMusic(event); // 음악 자동 재생
 
         switch(parts[0]) {
             case "!노래" :

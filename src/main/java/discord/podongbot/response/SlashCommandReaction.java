@@ -16,12 +16,15 @@ public class SlashCommandReaction extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         switch(event.getName()) {
-            case "ping":
+            case "핑" :
                 long ping = event.getJDA().getGatewayPing(); // 현재 봇의 핑 가져오기
                 event.reply("포동봇의 핑: " + ping + "ms").queue();
                 break;
-            case "volume":
+            case "볼륨" :
                 VolumeControl.handleVolumeCommand(event);
+                break;
+            case "채널설정" :
+                VolumeControl.handleChannelSetupCommand(event);
                 break;
         }
     }
@@ -30,13 +33,15 @@ public class SlashCommandReaction extends ListenerAdapter {
     public void onGuildReady(GuildReadyEvent event) {
         List<CommandData> commandDatas = new ArrayList<>();
         commandDatas.add(
-                Commands.slash("ping", "포동봇의 현재 핑 상태를 보여줍니다.")
+                Commands.slash("핑", "포동봇의 현재 핑 상태를 보여줍니다.")
         );
         commandDatas.add(
-                Commands.slash("volume", "볼륨 크기를 설정합니다.")
+                Commands.slash("볼륨", "포동봇의 볼륨을 조절합니다.")
                         .addOption(OptionType.INTEGER, "value", "설정할 볼륨 크기 (0~100)", true)
         );
-
+        commandDatas.add(
+                Commands.slash("채널설정", "포동봇 전용 채널을 설정합니다.")
+        );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }
 }
