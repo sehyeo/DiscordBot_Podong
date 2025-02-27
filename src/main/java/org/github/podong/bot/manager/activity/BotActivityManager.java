@@ -1,4 +1,4 @@
-package org.github.podong.bot;
+package org.github.podong.bot.manager.activity;
 
 import net.dv8tion.jda.api.entities.Activity;
 import org.springframework.stereotype.Component;
