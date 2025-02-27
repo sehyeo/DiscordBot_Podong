@@ -25,7 +25,7 @@ public class BotVoiceControl {
         AudioManager audioManager = guild.getAudioManager();
 
         audioManager.openAudioConnection(channel);
-        event.reply("⭕ `" + channel.getName() + "` 채널에 입장했습니다.").queue();
+        event.reply("음성 채널에 입장했습니다. 현재 채널: **" + channel.getName() + "**").queue();
     }
 
     public static void leaveVoiceChannel(SlashCommandInteractionEvent event) {
@@ -42,6 +42,6 @@ public class BotVoiceControl {
         }
 
         audioManager.closeAudioConnection();
-        event.reply("❌ 음성 채널에서 퇴장했습니다.").queue();
+        event.reply("음성 채널에서 퇴장했습니다.").queue();
     }
 }

@@ -48,9 +48,9 @@ public class DiscordBot implements CommandLineRunner {
                             new SlashCommandReaction())
                     .build();
 
-            System.out.println("⭕ 디스코드 봇 실행 완료!");
+            System.out.println("⭕ 포동봇 실행 완료!");
         } catch (Exception e) {
-            System.out.println("❌ 봇 실행 중 오류 발생: " + e.getMessage());
+            System.out.println("❌ 포동봇 실행 중 오류 발생: " + e.getMessage());
         }
     }
 }
