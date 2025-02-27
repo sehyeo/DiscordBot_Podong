@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.github.podong.bot.manager.activity.BotActivityManager;
 import org.github.podong.bot.manager.token.BotTokenManager;
 import org.github.podong.bot.response.ChattingReaction;
+import org.github.podong.bot.response.SlashCommandReaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -42,7 +43,9 @@ public class DiscordBot implements CommandLineRunner {
             JDABuilder.createDefault(token)
                     .enableIntents(intents)
                     .setActivity(botActivityManager.getDefaultActivity()) // 봇 상태 설정
-                    .addEventListeners(new ChattingReaction())
+                    .addEventListeners(
+                            new ChattingReaction(),
+                            new SlashCommandReaction())
                     .build();
 
             System.out.println("✅ 디스코드 봇 실행 완료!");
