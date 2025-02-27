@@ -17,9 +17,9 @@ public class ChattingReaction extends ListenerAdapter {
         VolumeControl.handleAutoPlayMusic(event); // 음악 자동 재생
 
         switch(parts[0]) {
-            case "!노래" :
-            case "!재생" :
-            case "!play" :
+            case "!노래":
+            case "!재생":
+            case "!play":
                 playMusic(event, parts[1]);
                 break;
         }
