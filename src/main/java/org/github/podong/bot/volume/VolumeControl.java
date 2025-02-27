@@ -18,10 +18,6 @@ public class VolumeControl {
         this.audioPlayer.setVolume(this.volume);
     }
 
-    public int getVolume() {
-        return this.volume;
-    }
-
     public void setVolume(int volume) {
         if (volume < 0) volume = 0;
         if (volume > 100) volume = 100;

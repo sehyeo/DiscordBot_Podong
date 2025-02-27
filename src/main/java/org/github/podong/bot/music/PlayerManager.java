@@ -55,10 +55,6 @@ public class PlayerManager {
         });
     }
 
-    public VolumeControl getVolumeControl(Guild guild) {
-        return this.getMusicManager(guild).getVolumeControl();
-    }
-
     public void loadAndPlay(TextChannel textChannel, String trackURL, Member client) {
         final GuildMusicManager musicManager = this.getMusicManager(textChannel.getGuild());
         this.audioPlayerManager.loadItemOrdered(musicManager, trackURL, new AudioLoadResultHandler() {
