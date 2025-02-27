@@ -14,12 +14,6 @@ public class ChattingReaction extends ListenerAdapter {
         String[] parts = msg.split(" ", 2);
 
         switch(parts[0]) {
-            case "!ping" :
-            case "!핑" :
-                long ping = event.getJDA().getGatewayPing(); // 현재 봇의 핑 가져오기
-                event.getChannel().sendMessage("포동봇의 핑: " + ping + "ms").queue();
-                break;
-
             case "!노래" :
             case "!재생" :
             case "!play" :
