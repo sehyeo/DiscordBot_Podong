@@ -1,8 +1,8 @@
-package org.github.podong.bot.music;
+package discord.podongbot.music;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import org.github.podong.bot.volume.VolumeControl;
+import discord.podongbot.volume.VolumeControl;
 
 // 서버별로 플레이어와 트랙 관리를 담당
 public class GuildMusicManager {
