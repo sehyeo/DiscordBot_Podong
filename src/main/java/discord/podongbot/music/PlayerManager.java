@@ -192,7 +192,7 @@ public class PlayerManager {
         // 현재 재생 중인 트랙이 있는지 확인
         AudioTrack currentTrack = musicManager.audioPlayer.getPlayingTrack();
         if (currentTrack == null) {
-            event.reply("⚠\uFE0F 음악이 재생되고 있지 않습니다!").queue();
+            event.reply("⚠️ 현재 재생 중인 음악이 없습니다.").queue();
             return;
         }
 
@@ -220,7 +220,7 @@ public class PlayerManager {
 
         // 현재 재생 중인지 확인
         if (musicManager.audioPlayer.getPlayingTrack() == null && musicManager.scheduler.getQueue().isEmpty()) {
-            event.reply("⚠\uFE0F 음악이 재생되고 있지 않습니다!").queue();
+            event.reply("⚠️ 현재 재생 중인 음악이 없습니다.").queue();
             return;
         }
 
@@ -256,7 +256,7 @@ public class PlayerManager {
 
         // 현재 재생 중인지 확인
         if (musicManager.audioPlayer.getPlayingTrack() == null && musicManager.scheduler.getQueue().isEmpty()) {
-            event.reply("⚠\uFE0F 음악이 재생되고 있지 않습니다!").queue();
+            event.reply("⚠️ 현재 재생 중인 음악이 없습니다.").queue();
             return;
         }
 
@@ -285,7 +285,7 @@ public class PlayerManager {
 
         List<AudioTrack> queue = scheduler.getQueue();
         if (queue.isEmpty()) {
-            event.reply("⚠\uFE0F 음악이 재생되고 있지 않습니다!").queue();
+            event.reply("⚠️ 현재 재생 중인 음악이 없습니다.").queue();
             return;
         }
 
@@ -309,12 +309,12 @@ public class PlayerManager {
         List<AudioTrack> queue = scheduler.getQueue();
 
         if (queue.isEmpty()) {
-            event.reply("⚠\uFE0F 대기열이 비어 있습니다.").queue();
+            event.reply("⚠️ 대기열이 비어 있습니다.").queue();
             return;
         }
 
         if (index < 1 || index > queue.size()) {
-            event.reply("⚠\uFE0F 잘못된 번호입니다.").queue();
+            event.reply("⚠️ 잘못된 번호입니다.").queue();
             return;
         }
 
@@ -324,6 +324,31 @@ public class PlayerManager {
         event.reply("🗑️ 삭제됨: **" + removedTrack.getInfo().title + "** (by " + removedTrack.getInfo().author + ")").queue();
     }
 
+    // 음악 스킵
+    public static void handleSkipCommand(SlashCommandInteractionEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        TextChannel textChannel = event.getChannel().asTextChannel();
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
+        TrackScheduler scheduler = musicManager.scheduler;
+
+        if (musicManager.audioPlayer.getPlayingTrack() == null) {
+            event.reply("⚠️ 현재 재생 중인 음악이 없습니다.").queue();
+            return;
+        }
+
+        // 현재 트랙을 스킵하고 다음 트랙 재생
+        scheduler.nextTrack();
+
+        // 대기열이 비어 있는 경우 음성 채널에서 나가기
+        if (scheduler.getQueue().isEmpty() && musicManager.audioPlayer.getPlayingTrack() == null) {
+            guild.getAudioManager().closeAudioConnection();
+            event.reply("⛔ 음악이 끝났습니다!").queue();
+        } else {
+            event.reply("⏭️ 다음 곡으로 스킵했습니다!").queue();
+        }
+    }
 
 
 }
