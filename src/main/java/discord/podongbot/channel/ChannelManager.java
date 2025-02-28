@@ -71,7 +71,7 @@ public class ChannelManager extends ListenerAdapter {
         });
     }
 
-    // 특정 채널에서 사용자의 메시지와 불필요한 봇 메시지를 1초 후 삭제
+    // 전용 채널에서 사용자의 메시지와 불필요한 봇 메시지를 3초 후 삭제
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         TextChannel channel = event.getChannel().asTextChannel();
@@ -89,7 +89,10 @@ public class ChannelManager extends ListenerAdapter {
             return; // 메인 메시지는 삭제하지 않음
         }
 
-        // 사용자의 메시지나 불필요한 봇 메시지 1초 후 삭제
-        message.delete().queueAfter(1, TimeUnit.SECONDS);
+        // 사용자의 메시지와 불필요한 봇 메시지 3초 후 삭제
+        message.delete().queueAfter(3, TimeUnit.SECONDS,
+                success -> System.out.println("✅ 메시지 삭제 성공: " + message.getContentRaw()),
+                failure -> System.out.println("❌ 메시지 삭제 실패: " + failure.getMessage())
+        );
     }
 }
