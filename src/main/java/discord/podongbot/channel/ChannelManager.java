@@ -77,22 +77,29 @@ public class ChannelManager extends ListenerAdapter {
         TextChannel channel = event.getChannel().asTextChannel();
         Guild guild = event.getGuild();
 
-        // 현재 서버의 음악 채널 ID 확인
+        // 현재 서버의 음악 채널 ID 확인 (기존 채널이 없으면 새로 저장)
         Long musicChannelId = guildChannelMap.get(guild.getIdLong());
+        if (musicChannelId == null) {
+            guild.getTextChannels().stream()
+                    .filter(ch -> ch.getName().equalsIgnoreCase("포동봇-음악채널"))
+                    .findFirst()
+                    .ifPresent(existingChannel -> guildChannelMap.put(guild.getIdLong(), existingChannel.getIdLong()));
+        }
+
+        // 여전히 musicChannelId가 null이면 삭제하지 않음
+        musicChannelId = guildChannelMap.get(guild.getIdLong());
         if (musicChannelId == null || channel.getIdLong() != musicChannelId) return;
 
         Message message = event.getMessage();
 
-        // 유지해야 하는 메시지인지 확인
+        // 현재 최신 메인 메시지인지 다시 확인
         Long pinnedMessageId = pinnedMessageMap.get(guild.getIdLong());
         if (pinnedMessageId != null && message.getIdLong() == pinnedMessageId) {
             return; // 메인 메시지는 삭제하지 않음
         }
 
-        // 사용자의 메시지와 불필요한 봇 메시지 3초 후 삭제
-        message.delete().queueAfter(3, TimeUnit.SECONDS,
-                success -> System.out.println("✅ 메시지 삭제 성공: " + message.getContentRaw()),
-                failure -> System.out.println("❌ 메시지 삭제 실패: " + failure.getMessage())
-        );
+        // 메인 메시지가 아닌 경우에만 3초 후 삭제 예약
+        message.delete().queueAfter(3, TimeUnit.SECONDS);
     }
+
 }
