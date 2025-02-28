@@ -27,6 +27,7 @@ public class PlayerManager {
     private static PlayerManager INSTANCE;
     private final Map<Long, GuildMusicManager> musicManagers;
     private final AudioPlayerManager audioPlayerManager;
+    private TextChannel textChannel;
 
     private PlayerManager() {
         this.musicManagers = new HashMap<>();
@@ -52,16 +53,16 @@ public class PlayerManager {
         return INSTANCE;
     }
 
-    public GuildMusicManager getMusicManager(Guild guild) {
+    public GuildMusicManager getMusicManager(Guild guild, TextChannel textChannel) {
         return this.musicManagers.computeIfAbsent(guild.getIdLong(), (guildId) -> {
-            final GuildMusicManager guildMusicManager = new GuildMusicManager(this.audioPlayerManager, guild);
+            final GuildMusicManager guildMusicManager = new GuildMusicManager(this.audioPlayerManager, guild, textChannel);
             guild.getAudioManager().setSendingHandler(guildMusicManager.getSendHandler());
             return guildMusicManager;
         });
     }
 
     public void loadAndPlay(TextChannel textChannel, String trackURL) {
-        final GuildMusicManager musicManager = this.getMusicManager(textChannel.getGuild());
+        final GuildMusicManager musicManager = this.getMusicManager(textChannel.getGuild(), textChannel);
         boolean isPlaying = musicManager.audioPlayer.getPlayingTrack() != null;
 
         this.audioPlayerManager.loadItemOrdered(musicManager, trackURL, new AudioLoadResultHandler() {
@@ -165,7 +166,8 @@ public class PlayerManager {
         Guild guild = event.getGuild();
         if (guild == null) return;
 
-        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+        TextChannel textChannel = event.getChannel().asTextChannel();
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
         List<AudioTrack> queue = musicManager.scheduler.getQueue();
 
         if (queue.isEmpty()) {
@@ -183,9 +185,11 @@ public class PlayerManager {
     // 음악 일시정지
     public static void handleTogglePauseCommand(SlashCommandInteractionEvent event) {
         Guild guild = event.getGuild();
+        TextChannel textChannel = event.getChannel().asTextChannel();
+
         if (guild == null) return;
 
-        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
 
         // 현재 재생 중인 트랙이 있는지 확인
         AudioTrack currentTrack = musicManager.audioPlayer.getPlayingTrack();
@@ -210,9 +214,11 @@ public class PlayerManager {
     // 음악 정지
     public static void handleStopCommand(SlashCommandInteractionEvent event) {
         Guild guild = event.getGuild();
+        TextChannel textChannel = event.getChannel().asTextChannel();
+
         if (guild == null) return;
 
-        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
 
         // 현재 재생 중인지 확인
         if (musicManager.audioPlayer.getPlayingTrack() == null && musicManager.scheduler.getQueue().isEmpty()) {
@@ -243,9 +249,11 @@ public class PlayerManager {
     // 음악 반복
     public static void handleRepeatCommand(SlashCommandInteractionEvent event, int mode) {
         Guild guild = event.getGuild();
+        TextChannel textChannel = event.getChannel().asTextChannel();
+
         if (guild == null) return;
 
-        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
         TrackScheduler scheduler = musicManager.scheduler;
 
         if (mode == 0) {
