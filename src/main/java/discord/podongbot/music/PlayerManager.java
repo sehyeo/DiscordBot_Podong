@@ -176,4 +176,30 @@ public class PlayerManager {
 
         event.reply("현재 대기열:\n" + queueList).queue();
     }
+    public static void handleTogglePauseCommand(SlashCommandInteractionEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+
+        // 현재 재생 중인 트랙이 있는지 확인
+        AudioTrack currentTrack = musicManager.audioPlayer.getPlayingTrack();
+        if (currentTrack == null) {
+            event.reply("⚠\uFE0F 음악이 재생되고 있지 않습니다!").queue();
+            return;
+        }
+
+        // 현재 음악 플레이어가 재생 중인지 확인
+        boolean isPaused = musicManager.audioPlayer.isPaused();
+
+        // 상태 변경: 재생 중이면 일시 정지, 일시 정지 상태면 다시 재생
+        musicManager.audioPlayer.setPaused(!isPaused);
+
+        if (isPaused) {
+            event.reply("▶\uFE0F 음악을 다시 재생합니다!").queue();
+        } else {
+            event.reply("⏸\uFE0F 음악을 일시정지했습니다!").queue();
+        }
+    }
+
 }

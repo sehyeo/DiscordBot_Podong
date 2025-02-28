@@ -38,6 +38,9 @@ public class SlashCommandReaction extends ListenerAdapter {
             case "대기열":
                 PlayerManager.handleQueueCommand(event);
                 break;
+            case "중지":
+                PlayerManager.handleTogglePauseCommand(event);
+                break;
         }
     }
 
@@ -62,6 +65,9 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("대기열", "현재 대기열을 보여줍니다.")
+        );
+        commandDatas.add(
+                Commands.slash("중지", "음악을 일시정지합니다.")
         );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }
