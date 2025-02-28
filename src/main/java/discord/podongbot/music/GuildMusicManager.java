@@ -3,6 +3,8 @@ package discord.podongbot.music;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import discord.podongbot.volume.VolumeControl;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 // 서버별로 플레이어와 트랙 관리를 담당
 public class GuildMusicManager {
@@ -11,10 +13,11 @@ public class GuildMusicManager {
     private final AudioPlayerSendHandler sendHandler;
     private final VolumeControl volumeControl;
 
-    public GuildMusicManager(AudioPlayerManager manager) {
+    public GuildMusicManager(AudioPlayerManager manager, Guild guild, TextChannel textChannel) {
         this.audioPlayer = manager.createPlayer();
-        this.scheduler = new TrackScheduler(this.audioPlayer);
+        this.scheduler = new TrackScheduler(this.audioPlayer, guild);
         this.audioPlayer.addListener(this.scheduler);
+        this.scheduler.setTextChannel(textChannel);
         this.sendHandler = new AudioPlayerSendHandler(this.audioPlayer);
         this.volumeControl = new VolumeControl(this.audioPlayer);
 

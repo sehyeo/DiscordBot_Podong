@@ -16,9 +16,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
@@ -27,6 +25,7 @@ public class PlayerManager {
     private static PlayerManager INSTANCE;
     private final Map<Long, GuildMusicManager> musicManagers;
     private final AudioPlayerManager audioPlayerManager;
+    private TextChannel textChannel;
 
     private PlayerManager() {
         this.musicManagers = new HashMap<>();
@@ -52,16 +51,16 @@ public class PlayerManager {
         return INSTANCE;
     }
 
-    public GuildMusicManager getMusicManager(Guild guild) {
+    public GuildMusicManager getMusicManager(Guild guild, TextChannel textChannel) {
         return this.musicManagers.computeIfAbsent(guild.getIdLong(), (guildId) -> {
-            final GuildMusicManager guildMusicManager = new GuildMusicManager(this.audioPlayerManager);
+            final GuildMusicManager guildMusicManager = new GuildMusicManager(this.audioPlayerManager, guild, textChannel);
             guild.getAudioManager().setSendingHandler(guildMusicManager.getSendHandler());
             return guildMusicManager;
         });
     }
 
     public void loadAndPlay(TextChannel textChannel, String trackURL) {
-        final GuildMusicManager musicManager = this.getMusicManager(textChannel.getGuild());
+        final GuildMusicManager musicManager = this.getMusicManager(textChannel.getGuild(), textChannel);
         boolean isPlaying = musicManager.audioPlayer.getPlayingTrack() != null;
 
         this.audioPlayerManager.loadItemOrdered(musicManager, trackURL, new AudioLoadResultHandler() {
@@ -165,7 +164,8 @@ public class PlayerManager {
         Guild guild = event.getGuild();
         if (guild == null) return;
 
-        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+        TextChannel textChannel = event.getChannel().asTextChannel();
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
         List<AudioTrack> queue = musicManager.scheduler.getQueue();
 
         if (queue.isEmpty()) {
@@ -183,9 +183,11 @@ public class PlayerManager {
     // 음악 일시정지
     public static void handleTogglePauseCommand(SlashCommandInteractionEvent event) {
         Guild guild = event.getGuild();
+        TextChannel textChannel = event.getChannel().asTextChannel();
+
         if (guild == null) return;
 
-        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
 
         // 현재 재생 중인 트랙이 있는지 확인
         AudioTrack currentTrack = musicManager.audioPlayer.getPlayingTrack();
@@ -210,9 +212,11 @@ public class PlayerManager {
     // 음악 정지
     public static void handleStopCommand(SlashCommandInteractionEvent event) {
         Guild guild = event.getGuild();
+        TextChannel textChannel = event.getChannel().asTextChannel();
+
         if (guild == null) return;
 
-        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
 
         // 현재 재생 중인지 확인
         if (musicManager.audioPlayer.getPlayingTrack() == null && musicManager.scheduler.getQueue().isEmpty()) {
@@ -239,6 +243,60 @@ public class PlayerManager {
         // 메시지 출력
         event.reply("⛔ 음악이 끝났습니다!").queue();
     }
+
+    // 음악 반복
+    public static void handleRepeatCommand(SlashCommandInteractionEvent event, int mode) {
+        Guild guild = event.getGuild();
+        TextChannel textChannel = event.getChannel().asTextChannel();
+
+        if (guild == null) return;
+
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
+        TrackScheduler scheduler = musicManager.scheduler;
+
+        // 현재 재생 중인지 확인
+        if (musicManager.audioPlayer.getPlayingTrack() == null && musicManager.scheduler.getQueue().isEmpty()) {
+            event.reply("⚠\uFE0F 음악이 재생되고 있지 않습니다!").queue();
+            return;
+        }
+
+        if (mode == 0) {
+            scheduler.setRepeatMode(0);
+            event.reply("🔁 반복이 비활성화되었습니다.").queue();
+        } else if (mode == 1) {
+            scheduler.setRepeatMode(1);
+            event.reply("🔂 현재 재생 중인 음악이 반복됩니다.").queue();
+        } else if (mode == 2) {
+            scheduler.setRepeatMode(2);
+            event.reply("🔁 대기열의 모든 음악이 반복됩니다.").queue();
+        } else {
+            event.reply("❌ 잘못된 입력입니다. `/반복 0`, `/반복 1`, `/반복 2` 중 하나를 입력해주세요.").queue();
+        }
+    }
+
+    // 음악 셔플
+    public static void handleShuffleCommand(SlashCommandInteractionEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        TextChannel textChannel = event.getChannel().asTextChannel();
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
+        TrackScheduler scheduler = musicManager.scheduler;
+
+        List<AudioTrack> queue = scheduler.getQueue();
+        if (queue.isEmpty()) {
+            event.reply("⚠\uFE0F 음악이 재생되고 있지 않습니다!").queue();
+            return;
+        }
+
+        List<AudioTrack> shuffledQueue = new ArrayList<>(queue);
+        Collections.shuffle(shuffledQueue); // 랜덤 셔플
+
+        // 셔플된 큐를 다시 설정
+        scheduler.setQueue(shuffledQueue);
+        event.reply("🔀 대기열이 셔플되었습니다!").queue();
+    }
+
 
 
 }
