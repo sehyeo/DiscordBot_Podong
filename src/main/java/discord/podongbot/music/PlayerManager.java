@@ -10,13 +10,15 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 // 서버별 GuildMusicManager를 중앙에서 관리
 public class PlayerManager {
@@ -56,17 +58,26 @@ public class PlayerManager {
         });
     }
 
-    public void loadAndPlay(TextChannel textChannel, String trackURL, Member client) {
+    public void loadAndPlay(TextChannel textChannel, String trackURL) {
         final GuildMusicManager musicManager = this.getMusicManager(textChannel.getGuild());
+        boolean isPlaying = musicManager.audioPlayer.getPlayingTrack() != null;
+
         this.audioPlayerManager.loadItemOrdered(musicManager, trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
-                // 트랙 대기열 추가
                 musicManager.scheduler.queue(audioTrack);
-                textChannel.sendMessageFormat("재생 중인 곡: `%s` (by `%s`)",
-                        audioTrack.getInfo().title,
-                        audioTrack.getInfo().author
-                ).queue();
+                // 트랙 대기열 추가
+                if (isPlaying) {
+                    textChannel.sendMessageFormat("대기열에 추가됨: **%s** (by %s)",
+                            audioTrack.getInfo().title,
+                            audioTrack.getInfo().author
+                    ).queue();
+                } else {
+                    textChannel.sendMessageFormat("재생 중인 곡: **%s** (by %s)",
+                            audioTrack.getInfo().title,
+                            audioTrack.getInfo().author
+                    ).queue();
+                }
             }
 
             @Override
@@ -77,11 +88,17 @@ public class PlayerManager {
                         : audioPlaylist.getTracks().get(0);
 
                 musicManager.scheduler.queue(firstTrack);
-                textChannel.sendMessageFormat(
-                        "재생 중인 곡: `%s` (by `%s`)",
-                        firstTrack.getInfo().title,
-                        firstTrack.getInfo().author
-                ).queue();
+                if (isPlaying) {
+                    textChannel.sendMessageFormat("대기열에 추가됨: **%s** (by %s)",
+                            firstTrack.getInfo().title,
+                            firstTrack.getInfo().author
+                    ).queue();
+                } else {
+                    textChannel.sendMessageFormat("재생 중인 곡: **%s** (by %s)",
+                            firstTrack.getInfo().title,
+                            firstTrack.getInfo().author
+                    ).queue();
+                }
             }
 
             @Override
@@ -91,8 +108,14 @@ public class PlayerManager {
 
             @Override
             public void loadFailed(FriendlyException e) {
-                textChannel.sendMessage("재생할 수 없습니다. " +  e.getMessage()).queue();
+                if (e.getMessage().contains("blocked it from display")) {
+                    textChannel.sendMessage("⚠️ 해당 영상은 저작권 문제로 인해 Discord에서 재생할 수 없습니다.\n"
+                            + "🔗 YouTube에서 직접 시청하세요: " + trackURL).queue();
+                } else {
+                    textChannel.sendMessage("재생할 수 없습니다: " + e.getMessage()).queue();
+                }
             }
+
         });
     }
 
@@ -115,8 +138,6 @@ public class PlayerManager {
         if (musicChannel == null || event.getChannel().getIdLong() != musicChannel.getIdLong()) return;
 
         String musicQuery = event.getMessage().getContentRaw();
-        System.out.println("입력된 음악 제목: " + musicQuery); // 디버깅 출력
-
         if (musicQuery.isEmpty()) {
             event.getChannel().sendMessage("검색할 노래 제목을 입력해주세요!").queue();
             return;
@@ -134,6 +155,25 @@ public class PlayerManager {
             guild.getAudioManager().openAudioConnection(userChannel);
         }
         String link = "ytsearch: " + musicQuery;
-        PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link, event.getMember());
+        PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link);
+    }
+
+    public static void handleQueueCommand(SlashCommandInteractionEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+        List<AudioTrack> queue = musicManager.scheduler.getQueue();
+
+        if (queue.isEmpty()) {
+            event.reply("대기열이 비어 있습니다.").queue();
+            return;
+        }
+
+        String queueList = queue.stream()
+                .map(track -> String.format("- **%s** (by %s)", track.getInfo().title, track.getInfo().author))
+                .collect(Collectors.joining("\n"));
+
+        event.reply("현재 대기열:\n" + queueList).queue();
     }
 }

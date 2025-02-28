@@ -5,8 +5,10 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
 
 // 음악 재생 대기열(Queue) 관리
 public class TrackScheduler extends AudioEventAdapter {
@@ -34,4 +36,7 @@ public class TrackScheduler extends AudioEventAdapter {
     public void nextTrack() {
         this.audioPlayer.startTrack(this.queue.poll(), false);
     }
+
+    public List<AudioTrack> getQueue() {
+        return this.queue.stream().collect(Collectors.toList());    }
 }

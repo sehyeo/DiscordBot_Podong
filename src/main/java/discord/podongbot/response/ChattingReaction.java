@@ -1,6 +1,7 @@
 package discord.podongbot.response;
 
 import discord.podongbot.music.PlayerManager;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -25,8 +26,10 @@ public class ChattingReaction extends ListenerAdapter {
     }
 
     public void playMusic(MessageReceivedEvent event, String text) {
-        if(!event.getMember().getVoiceState().inAudioChannel()) {
-            event.getChannel().sendMessage("소속해 있는 음성채널이 없습니다.").queue();
+        Member member = event.getMember();
+
+        if(member == null || !member.getVoiceState().inAudioChannel()) {
+            event.getChannel().sendMessage("소속해있는 음성채널이 없습니다.").queue();
             return;
         }
 
@@ -38,6 +41,6 @@ public class ChattingReaction extends ListenerAdapter {
         }
 
         String link = "ytsearch: " + text + " 노래";
-        PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link, event.getMember());
+        PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link);
     }
 }
