@@ -324,6 +324,24 @@ public class PlayerManager {
         event.reply("🗑️ 삭제됨: **" + removedTrack.getInfo().title + "** (by " + removedTrack.getInfo().author + ")").queue();
     }
 
+    // 음악 스킵
+    public static void handleSkipCommand(SlashCommandInteractionEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        TextChannel textChannel = event.getChannel().asTextChannel();
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
+        TrackScheduler scheduler = musicManager.scheduler;
+
+        if (musicManager.audioPlayer.getPlayingTrack() == null) {
+            event.reply("⚠️ 현재 재생 중인 음악이 없습니다.").queue();
+            return;
+        }
+
+        // 현재 트랙을 스킵하고 다음 트랙 재생
+        scheduler.nextTrack();
+        event.reply("⏭️ 다음 곡으로 스킵했습니다!").queue();
+    }
 
 
 }

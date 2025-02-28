@@ -55,6 +55,9 @@ public class SlashCommandReaction extends ListenerAdapter {
                 int index = event.getOption("index").getAsInt();
                 PlayerManager.handleRemoveCommand(event, index);
                 break;
+            case "스킵":
+                PlayerManager.handleSkipCommand(event);
+                break;
         }
     }
 
@@ -96,6 +99,9 @@ public class SlashCommandReaction extends ListenerAdapter {
         commandDatas.add(
                 Commands.slash("삭제", "대기열에서 특정 곡을 삭제합니다.")
                         .addOption(OptionType.INTEGER, "index", "삭제할 곡의 순서 (1부터 시작)", true)
+        );
+        commandDatas.add(
+                Commands.slash("스킵", "현재 재생되고 있는 음악을 스킵합니다.")
         );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }
