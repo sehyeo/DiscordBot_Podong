@@ -297,6 +297,33 @@ public class PlayerManager {
         event.reply("🔀 대기열이 셔플되었습니다!").queue();
     }
 
+    // 음악 삭제
+    public static void handleRemoveCommand(SlashCommandInteractionEvent event, int index) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        TextChannel textChannel = event.getChannel().asTextChannel();
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
+        TrackScheduler scheduler = musicManager.scheduler;
+
+        List<AudioTrack> queue = scheduler.getQueue();
+
+        if (queue.isEmpty()) {
+            event.reply("⚠\uFE0F 대기열이 비어 있어 삭제할 수 없습니다.").queue();
+            return;
+        }
+
+        if (index < 1 || index > queue.size()) {
+            event.reply("잘못된 번호입니다. 1부터 " + queue.size() + " 사이의 값을 입력해주세요.").queue();
+            return;
+        }
+
+        // 대기열에서 해당 곡 삭제
+        AudioTrack removedTrack = queue.remove(index - 1);
+        scheduler.setQueue(queue);
+        event.reply("🗑️ 삭제됨: **" + removedTrack.getInfo().title + "** (by " + removedTrack.getInfo().author + ")").queue();
+    }
+
 
 
 }
