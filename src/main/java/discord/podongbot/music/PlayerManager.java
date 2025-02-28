@@ -15,9 +15,11 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 // 서버별 GuildMusicManager를 중앙에서 관리
@@ -218,9 +220,18 @@ public class PlayerManager {
             return;
         }
 
-        // 음악 정지 및 대기열 초기화
+        // 음악 정지
         musicManager.audioPlayer.stopTrack();
-        musicManager.scheduler.getQueue().clear();
+
+        // Lavaplayer 내부 queue를 강제로 초기화
+        try {
+            Field queueField = musicManager.scheduler.getClass().getDeclaredField("queue");
+            queueField.setAccessible(true);
+            queueField.set(musicManager.scheduler, new LinkedBlockingQueue<>()); // 새로운 빈 대기열 설정
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            event.getHook().sendMessage("🚨 대기열 초기화 중 오류 발생!").queue();
+            return;
+        }
 
         // 음성 채널에서 봇 나가기
         guild.getAudioManager().closeAudioConnection();
