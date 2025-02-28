@@ -169,7 +169,7 @@ public class PlayerManager {
         List<AudioTrack> queue = musicManager.scheduler.getQueue();
 
         if (queue.isEmpty()) {
-            event.reply("대기열이 비어 있습니다.").queue();
+            event.reply("⚠\uFE0F 대기열이 비어 있습니다.").queue();
             return;
         }
 
@@ -309,12 +309,12 @@ public class PlayerManager {
         List<AudioTrack> queue = scheduler.getQueue();
 
         if (queue.isEmpty()) {
-            event.reply("⚠\uFE0F 대기열이 비어 있어 삭제할 수 없습니다.").queue();
+            event.reply("⚠\uFE0F 대기열이 비어 있습니다.").queue();
             return;
         }
 
         if (index < 1 || index > queue.size()) {
-            event.reply("잘못된 번호입니다. 1부터 " + queue.size() + " 사이의 값을 입력해주세요.").queue();
+            event.reply("⚠\uFE0F 잘못된 번호입니다.").queue();
             return;
         }
 
