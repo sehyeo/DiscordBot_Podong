@@ -182,6 +182,13 @@ public class PlayerManager {
 
         GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
 
+        // 현재 재생 중인 트랙이 있는지 확인
+        AudioTrack currentTrack = musicManager.audioPlayer.getPlayingTrack();
+        if (currentTrack == null) {
+            event.reply("⚠\uFE0F 음악이 재생되고 있지 않습니다!").queue();
+            return;
+        }
+
         // 현재 음악 플레이어가 재생 중인지 확인
         boolean isPaused = musicManager.audioPlayer.isPaused();
 
