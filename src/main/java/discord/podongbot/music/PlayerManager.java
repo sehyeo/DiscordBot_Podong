@@ -289,12 +289,7 @@ public class PlayerManager {
             return;
         }
 
-        // 현재 재생 중인 곡을 포함하여 셔플하기 위해 새로운 리스트 생성
         List<AudioTrack> shuffledQueue = new ArrayList<>(queue);
-        if (musicManager.audioPlayer.getPlayingTrack() != null) {
-            shuffledQueue.add(0, musicManager.audioPlayer.getPlayingTrack());
-        }
-
         Collections.shuffle(shuffledQueue); // 랜덤 셔플
 
         // 셔플된 큐를 다시 설정
