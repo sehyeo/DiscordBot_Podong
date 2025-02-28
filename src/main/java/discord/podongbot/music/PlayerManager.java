@@ -108,8 +108,14 @@ public class PlayerManager {
 
             @Override
             public void loadFailed(FriendlyException e) {
-                textChannel.sendMessage("재생할 수 없습니다. " +  e.getMessage()).queue();
+                if (e.getMessage().contains("blocked it from display")) {
+                    textChannel.sendMessage("⚠️ 해당 영상은 저작권 문제로 인해 Discord에서 재생할 수 없습니다.\n"
+                            + "🔗 YouTube에서 직접 시청하세요: " + trackURL).queue();
+                } else {
+                    textChannel.sendMessage("재생할 수 없습니다: " + e.getMessage()).queue();
+                }
             }
+
         });
     }
 
@@ -160,7 +166,7 @@ public class PlayerManager {
         List<AudioTrack> queue = musicManager.scheduler.getQueue();
 
         if (queue.isEmpty()) {
-            event.getChannel().sendMessage("대기열이 비어 있습니다.").queue();
+            event.reply("대기열이 비어 있습니다.").queue();
             return;
         }
 
@@ -168,6 +174,6 @@ public class PlayerManager {
                 .map(track -> String.format("- **%s** (by %s)", track.getInfo().title, track.getInfo().author))
                 .collect(Collectors.joining("\n"));
 
-        event.getChannel().sendMessage("현재 대기열:\n" + queueList).queue();
+        event.reply("현재 대기열:\n" + queueList).queue();
     }
 }
