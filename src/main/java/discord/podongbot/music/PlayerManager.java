@@ -16,9 +16,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
@@ -274,6 +272,34 @@ public class PlayerManager {
         } else {
             event.reply("❌ 잘못된 입력입니다. `/반복 0`, `/반복 1`, `/반복 2` 중 하나를 입력해주세요.").queue();
         }
+    }
+
+    // 음악 셔플
+    public static void handleShuffleCommand(SlashCommandInteractionEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        TextChannel textChannel = event.getChannel().asTextChannel();
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
+        TrackScheduler scheduler = musicManager.scheduler;
+
+        List<AudioTrack> queue = scheduler.getQueue();
+        if (queue.isEmpty()) {
+            event.reply("⚠\uFE0F 음악이 재생되고 있지 않습니다!").queue();
+            return;
+        }
+
+        // 현재 재생 중인 곡을 포함하여 셔플하기 위해 새로운 리스트 생성
+        List<AudioTrack> shuffledQueue = new ArrayList<>(queue);
+        if (musicManager.audioPlayer.getPlayingTrack() != null) {
+            shuffledQueue.add(0, musicManager.audioPlayer.getPlayingTrack());
+        }
+
+        Collections.shuffle(shuffledQueue); // 랜덤 셔플
+
+        // 셔플된 큐를 다시 설정
+        scheduler.setQueue(shuffledQueue);
+        event.reply("🔀 대기열이 셔플되었습니다!").queue();
     }
 
 

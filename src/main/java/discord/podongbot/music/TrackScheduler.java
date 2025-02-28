@@ -82,4 +82,9 @@ public class TrackScheduler extends AudioEventAdapter {
             }
         }
     }
+
+    public void setQueue(List<AudioTrack> newQueue) {
+        this.queue.clear();
+        this.queue.addAll(newQueue);
+    }
 }

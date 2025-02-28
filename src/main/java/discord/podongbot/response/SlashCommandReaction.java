@@ -48,6 +48,9 @@ public class SlashCommandReaction extends ListenerAdapter {
                 int mode = event.getOption("mode").getAsInt();
                 PlayerManager.handleRepeatCommand(event, mode);
                 break;
+            case "셔플":
+                PlayerManager.handleShuffleCommand(event);
+                break;
         }
     }
 
@@ -82,6 +85,9 @@ public class SlashCommandReaction extends ListenerAdapter {
         commandDatas.add(
                 Commands.slash("반복", "반복 모드를 설정합니다.")
                         .addOption(OptionType.INTEGER, "mode", "반복 모드 (0: 반복 없음, 1: 현재 트랙 반복, 2: 대기열 전체 반복)", true)
+        );
+        commandDatas.add(
+                Commands.slash("셔플", "모든 곡의 순서를 섞습니다.")
         );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }
