@@ -169,7 +169,7 @@ public class PlayerManager {
         List<AudioTrack> queue = musicManager.scheduler.getQueue();
 
         if (queue.isEmpty()) {
-            event.reply("대기열이 비어 있습니다.").queue();
+            event.reply("⚠\uFE0F 대기열이 비어 있습니다.").queue();
             return;
         }
 
@@ -295,6 +295,33 @@ public class PlayerManager {
         // 셔플된 큐를 다시 설정
         scheduler.setQueue(shuffledQueue);
         event.reply("🔀 대기열이 셔플되었습니다!").queue();
+    }
+
+    // 음악 삭제
+    public static void handleRemoveCommand(SlashCommandInteractionEvent event, int index) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        TextChannel textChannel = event.getChannel().asTextChannel();
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
+        TrackScheduler scheduler = musicManager.scheduler;
+
+        List<AudioTrack> queue = scheduler.getQueue();
+
+        if (queue.isEmpty()) {
+            event.reply("⚠\uFE0F 대기열이 비어 있습니다.").queue();
+            return;
+        }
+
+        if (index < 1 || index > queue.size()) {
+            event.reply("⚠\uFE0F 잘못된 번호입니다.").queue();
+            return;
+        }
+
+        // 대기열에서 해당 곡 삭제
+        AudioTrack removedTrack = queue.remove(index - 1);
+        scheduler.setQueue(queue);
+        event.reply("🗑️ 삭제됨: **" + removedTrack.getInfo().title + "** (by " + removedTrack.getInfo().author + ")").queue();
     }
 
 

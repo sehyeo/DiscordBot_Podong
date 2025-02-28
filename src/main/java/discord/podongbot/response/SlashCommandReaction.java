@@ -51,6 +51,10 @@ public class SlashCommandReaction extends ListenerAdapter {
             case "셔플":
                 PlayerManager.handleShuffleCommand(event);
                 break;
+            case "삭제":
+                int index = event.getOption("index").getAsInt();
+                PlayerManager.handleRemoveCommand(event, index);
+                break;
         }
     }
 
@@ -88,6 +92,10 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("셔플", "모든 곡의 순서를 섞습니다.")
+        );
+        commandDatas.add(
+                Commands.slash("삭제", "대기열에서 특정 곡을 삭제합니다.")
+                        .addOption(OptionType.INTEGER, "index", "삭제할 곡의 순서 (1부터 시작)", true)
         );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }
