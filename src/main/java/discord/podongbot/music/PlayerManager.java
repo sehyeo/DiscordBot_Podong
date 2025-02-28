@@ -158,6 +158,7 @@ public class PlayerManager {
         PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link);
     }
 
+    // 대기열 관리
     public static void handleQueueCommand(SlashCommandInteractionEvent event) {
         Guild guild = event.getGuild();
         if (guild == null) return;
@@ -176,6 +177,8 @@ public class PlayerManager {
 
         event.reply("현재 대기열:\n" + queueList).queue();
     }
+
+    // 음악 일시정지
     public static void handleTogglePauseCommand(SlashCommandInteractionEvent event) {
         Guild guild = event.getGuild();
         if (guild == null) return;
@@ -201,5 +204,30 @@ public class PlayerManager {
             event.reply("⏸\uFE0F 음악을 일시정지했습니다!").queue();
         }
     }
+
+    // 음악 정지
+    public static void handleStopCommand(SlashCommandInteractionEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+
+        // 현재 재생 중인지 확인
+        if (musicManager.audioPlayer.getPlayingTrack() == null && musicManager.scheduler.getQueue().isEmpty()) {
+            event.reply("⚠\uFE0F 음악이 재생되고 있지 않습니다!").queue();
+            return;
+        }
+
+        // 음악 정지 및 대기열 초기화
+        musicManager.audioPlayer.stopTrack();
+        musicManager.scheduler.getQueue().clear();
+
+        // 음성 채널에서 봇 나가기
+        guild.getAudioManager().closeAudioConnection();
+
+        // 메시지 출력
+        event.reply("⛔ 음악이 끝났습니다!").queue();
+    }
+
 
 }
