@@ -15,9 +15,11 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 // 서버별 GuildMusicManager를 중앙에서 관리
@@ -158,6 +160,7 @@ public class PlayerManager {
         PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link);
     }
 
+    // 대기열 관리
     public static void handleQueueCommand(SlashCommandInteractionEvent event) {
         Guild guild = event.getGuild();
         if (guild == null) return;
@@ -176,6 +179,8 @@ public class PlayerManager {
 
         event.reply("현재 대기열:\n" + queueList).queue();
     }
+
+    // 음악 일시정지
     public static void handleTogglePauseCommand(SlashCommandInteractionEvent event) {
         Guild guild = event.getGuild();
         if (guild == null) return;
@@ -201,5 +206,39 @@ public class PlayerManager {
             event.reply("⏸\uFE0F 음악을 일시정지했습니다!").queue();
         }
     }
+
+    // 음악 정지
+    public static void handleStopCommand(SlashCommandInteractionEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+
+        // 현재 재생 중인지 확인
+        if (musicManager.audioPlayer.getPlayingTrack() == null && musicManager.scheduler.getQueue().isEmpty()) {
+            event.reply("⚠\uFE0F 음악이 재생되고 있지 않습니다!").queue();
+            return;
+        }
+
+        // 음악 정지
+        musicManager.audioPlayer.stopTrack();
+
+        // Lavaplayer 내부 queue를 강제로 초기화
+        try {
+            Field queueField = musicManager.scheduler.getClass().getDeclaredField("queue");
+            queueField.setAccessible(true);
+            queueField.set(musicManager.scheduler, new LinkedBlockingQueue<>()); // 새로운 빈 대기열 설정
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            event.getHook().sendMessage("🚨 대기열 초기화 중 오류 발생!").queue();
+            return;
+        }
+
+        // 음성 채널에서 봇 나가기
+        guild.getAudioManager().closeAudioConnection();
+
+        // 메시지 출력
+        event.reply("⛔ 음악이 끝났습니다!").queue();
+    }
+
 
 }
