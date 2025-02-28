@@ -4,6 +4,8 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.managers.AudioManager;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -14,11 +16,13 @@ import java.util.stream.Collectors;
 public class TrackScheduler extends AudioEventAdapter {
     private final AudioPlayer audioPlayer;
     private final BlockingQueue<AudioTrack> queue;
+    private final Guild guild;
     private int repeatMode = 0; // 0: 반복 없음, 1: 현재 트랙 반복, 2: 대기열 전체 반복
 
-    public TrackScheduler(AudioPlayer audioPlayer) {
+    public TrackScheduler(AudioPlayer audioPlayer, Guild guild) {
         this.audioPlayer = audioPlayer;
         this.queue = new LinkedBlockingDeque<>();
+        this.guild = guild;
     }
 
     public void queue(AudioTrack track) {
@@ -38,9 +42,15 @@ public class TrackScheduler extends AudioEventAdapter {
                 if(!this.queue.isEmpty()) {
                     nextTrack();
                 }
+                else {
+                    leaveVoiceChannel();
+                }
             }
             else {
                 nextTrack();
+                if(this.queue.isEmpty()) {
+                    leaveVoiceChannel();
+                }
             }
         }
     }
@@ -55,5 +65,12 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public void setRepeatMode(int mode) {
         this.repeatMode = mode;
+    }
+
+    private void leaveVoiceChannel() {
+        AudioManager audioManager = guild.getAudioManager();
+        if (audioManager.isConnected()) {
+            audioManager.closeAudioConnection();
+        }
     }
 }
