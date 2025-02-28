@@ -256,6 +256,12 @@ public class PlayerManager {
         GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild, textChannel);
         TrackScheduler scheduler = musicManager.scheduler;
 
+        // 현재 재생 중인지 확인
+        if (musicManager.audioPlayer.getPlayingTrack() == null && musicManager.scheduler.getQueue().isEmpty()) {
+            event.reply("⚠\uFE0F 음악이 재생되고 있지 않습니다!").queue();
+            return;
+        }
+
         if (mode == 0) {
             scheduler.setRepeatMode(0);
             event.reply("🔁 반복이 비활성화되었습니다.").queue();
