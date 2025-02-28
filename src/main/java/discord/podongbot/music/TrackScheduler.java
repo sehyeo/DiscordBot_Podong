@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class TrackScheduler extends AudioEventAdapter {
     private final AudioPlayer audioPlayer;
     private final BlockingQueue<AudioTrack> queue;
+    private int repeatMode = 0; // 0: 반복 없음, 1: 현재 트랙 반복, 2: 대기열 전체 반복
 
     public TrackScheduler(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
@@ -29,7 +30,18 @@ public class TrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (endReason.mayStartNext) {
-            nextTrack();
+            if(repeatMode == 1) {
+                this.audioPlayer.startTrack(track.makeClone(), false); // 현재 트랙만 반복
+            }
+            else if(repeatMode == 2) {
+                this.queue.offer(track.makeClone()); // 대기열 끝에 현재 트랙 추가
+                if(!this.queue.isEmpty()) {
+                    nextTrack();
+                }
+            }
+            else {
+                nextTrack();
+            }
         }
     }
 
@@ -38,5 +50,10 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public List<AudioTrack> getQueue() {
-        return this.queue.stream().collect(Collectors.toList());    }
+        return this.queue.stream().collect(Collectors.toList());
+    }
+
+    public void setRepeatMode(int mode) {
+        this.repeatMode = mode;
+    }
 }

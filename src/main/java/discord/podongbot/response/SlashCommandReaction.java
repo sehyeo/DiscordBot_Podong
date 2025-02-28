@@ -44,6 +44,10 @@ public class SlashCommandReaction extends ListenerAdapter {
             case "정지":
                 PlayerManager.handleStopCommand(event);
                 break;
+            case "반복":
+                int mode = event.getOption("mode").getAsInt();
+                PlayerManager.handleRepeatCommand(event, mode);
+                break;
         }
     }
 
@@ -74,6 +78,10 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("정지", "모든 플레이어를 초기화합니다.")
+        );
+        commandDatas.add(
+                Commands.slash("반복", "반복 모드를 설정합니다.")
+                        .addOption(OptionType.INTEGER, "mode", "반복 모드 (0: 반복 없음, 1: 현재 트랙 반복, 2: 대기열 전체 반복)", true)
         );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }

@@ -240,5 +240,28 @@ public class PlayerManager {
         event.reply("⛔ 음악이 끝났습니다!").queue();
     }
 
+    // 음악 반복
+    public static void handleRepeatCommand(SlashCommandInteractionEvent event, int mode) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        GuildMusicManager musicManager = getINSTANCE().getMusicManager(guild);
+        TrackScheduler scheduler = musicManager.scheduler;
+
+        if (mode == 0) {
+            scheduler.setRepeatMode(0);
+            event.reply("🔁 반복이 비활성화되었습니다.").queue();
+        } else if (mode == 1) {
+            scheduler.setRepeatMode(1);
+            event.reply("🔂 현재 재생 중인 음악이 반복됩니다.").queue();
+        } else if (mode == 2) {
+            scheduler.setRepeatMode(2);
+            event.reply("🔁 대기열의 모든 음악이 반복됩니다.").queue();
+        } else {
+            event.reply("❌ 잘못된 입력입니다. `/반복 0`, `/반복 1`, `/반복 2` 중 하나를 입력해주세요.").queue();
+        }
+    }
+
+
 
 }
