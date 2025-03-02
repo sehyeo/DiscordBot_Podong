@@ -173,9 +173,14 @@ public class PlayerManager {
             return;
         }
 
-        String queueList = queue.stream()
-                .map(track -> String.format("- **%s** (by %s)", track.getInfo().title, track.getInfo().author))
-                .collect(Collectors.joining("\n"));
+        // 번호를 붙여 대기열 리스트 생성
+        StringBuilder queueList = new StringBuilder();
+        int index = 1;
+        for (AudioTrack track : queue) {
+            queueList.append(String.format("%d. **%s** (by %s)\n",
+                    index, track.getInfo().title, track.getInfo().author));
+            index++;
+        }
 
         event.reply("현재 대기열:\n" + queueList).setEphemeral(true).queue();
     }
