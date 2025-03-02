@@ -174,11 +174,11 @@ public class PlayerManager {
         }
 
         // 번호를 붙여 대기열 리스트 생성
-        String queueList = "";
+        StringBuilder queueList = new StringBuilder();
         int index = 1;
         for (AudioTrack track : queue) {
-            queueList += String.format("%d. **%s** (by %s)\n",
-                    index, track.getInfo().title, track.getInfo().author);
+            queueList.append(String.format("%d. **%s** (by %s)\n",
+                    index, track.getInfo().title, track.getInfo().author));
             index++;
         }
 
