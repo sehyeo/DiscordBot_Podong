@@ -51,9 +51,7 @@ public class ChannelManager extends ListenerAdapter {
         });
     }
 
-    /**
-     * 📌 새 채널에 안내 메시지를 보내고, 즉시 pinnedMessageMap을 반영
-     */
+    // 새 채널에 안내 메시지를 보내고, 즉시 pinnedMessageMap을 반영
     private static void sendPinnedMessage(TextChannel channel) {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("🎵 포동봇 - 음악 채널 🎵");
@@ -75,16 +73,13 @@ public class ChannelManager extends ListenerAdapter {
         embed.setColor(Color.BLUE);
         embed.setThumbnail(channel.getJDA().getSelfUser().getEffectiveAvatarUrl());
 
-        // 🎶 음악 검색 버튼 추가
+        // 음악 검색 버튼 추가
         Button searchButton = Button.link("https://www.youtube.com/", "🔍 음악 검색하기");
 
-        // 📌 새 메시지를 보내기 전에 먼저 pinnedMessageMap을 업데이트하여 삭제 방지
+        // 새 메시지를 보내기 전에 먼저 pinnedMessageMap을 업데이트하여 삭제 방지
         channel.sendMessageEmbeds(embed.build())
                 .setActionRow(searchButton)
-                .queue(message -> {
-                    pinnedMessageMap.put(channel.getGuild().getIdLong(), message.getIdLong());
-                    System.out.println("[DEBUG] 안내 메시지 등록됨 (먼저 저장됨): " + message.getId());
-                });
+                .queue(message -> pinnedMessageMap.put(channel.getGuild().getIdLong(), message.getIdLong()));
     }
 
     @Override
@@ -106,21 +101,18 @@ public class ChannelManager extends ListenerAdapter {
         musicChannelId = guildChannelMap.get(guild.getIdLong());
         if (musicChannelId == null || channel.getIdLong() != musicChannelId) return;
 
-        // 📌 안내 메시지가 아직 등록되지 않은 경우 삭제 방지
+        // 안내 메시지가 아직 등록되지 않은 경우 삭제 방지
         if (!pinnedMessageMap.containsKey(guild.getIdLong())) {
-            System.out.println("[DEBUG] 안내 메시지가 아직 등록되지 않음 → 삭제 방지");
             return;
         }
 
-        // 📌 기존 안내 메시지인지 확인 (고정된 메시지는 삭제하지 않음)
+        // 기존 안내 메시지인지 확인 (고정된 메시지는 삭제하지 않음)
         Long pinnedMessageId = pinnedMessageMap.get(guild.getIdLong());
         if (pinnedMessageId != null && message.getIdLong() == pinnedMessageId) {
-            System.out.println("[DEBUG] 안내 메시지는 유지됨: " + message.getId());
             return;
         }
 
-        // 📌 봇이 보낸 일반 메시지도 삭제 (단, 안내 메시지는 제외)
-        System.out.println("[DEBUG] 메시지 삭제됨: " + message.getContentRaw());
+        // 봇이 보낸 일반 메시지도 삭제 (단, 안내 메시지는 제외)
         message.delete().queueAfter(3, TimeUnit.SECONDS);
     }
 
@@ -133,8 +125,6 @@ public class ChannelManager extends ListenerAdapter {
         // 삭제된 채널이 음악 채널인지 확인
         Long musicChannelId = guildChannelMap.get(guild.getIdLong());
         if (musicChannelId != null && deletedChannel.getIdLong() == musicChannelId) {
-            System.out.println("[DEBUG] 음악 채널이 삭제됨: " + deletedChannel.getName());
-
             // 채널 삭제 시 pinnedMessageMap도 제거
             pinnedMessageMap.remove(guild.getIdLong());
             guildChannelMap.remove(guild.getIdLong());

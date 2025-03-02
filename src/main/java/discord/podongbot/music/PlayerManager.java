@@ -169,7 +169,7 @@ public class PlayerManager {
         List<AudioTrack> queue = musicManager.scheduler.getQueue();
 
         if (queue.isEmpty()) {
-            event.reply("⚠\uFE0F 대기열이 비어 있습니다.").queue();
+            event.reply("⚠️ 대기열이 비어 있습니다.").queue();
             return;
         }
 
