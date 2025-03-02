@@ -1,11 +1,7 @@
 # 🎵 포동봇 (PodongBot) - Discord 음악 봇
 
 ![Discord](https://img.shields.io/badge/Discord-Music%20Bot-blue?style=for-the-badge&logo=discord)
-<p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg" width="100" alt="Java">
-  <img src="https://raw.githubusercontent.com/DV8FromTheWorld/JDA/assets/assets/icon.png" width="100" alt="JDA">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/YouTube_social_white_square_%282017%29.svg" width="100" alt="LavaPlayer">
-</p>
+<img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=Java&logoColor=white">
 
 
 ## 🚀 소개
