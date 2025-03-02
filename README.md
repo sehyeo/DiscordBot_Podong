@@ -1,4 +1,4 @@
-# 🎵 포동봇 (PodongBot) - Discord 음악 봇(아직 개발 진행 중)
+# 🎵 포동봇 (PodongBot) - Discord 음악 봇(개발 진행 중)
 
 <img src="https://github.com/sehyeo/DiscordBot_Podong/blob/main/src/main/java/discord/podongbot/assets/podongbot.jpg?raw=true" width="250px" height="250px">
 
