@@ -1,4 +1,4 @@
-package discord.podongbot.response;
+package discord.podongbot.reaction;
 
 import discord.podongbot.music.PlayerManager;
 import net.dv8tion.jda.api.entities.Member;

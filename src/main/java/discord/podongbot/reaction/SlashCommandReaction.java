@@ -1,9 +1,9 @@
-package discord.podongbot.response;
+package discord.podongbot.reaction;
 
 import discord.podongbot.channel.ChannelManager;
 import discord.podongbot.music.PlayerManager;
-import discord.podongbot.voice.BotVoiceControl;
-import discord.podongbot.volume.VolumeControl;
+import discord.podongbot.voice.VoiceController;
+import discord.podongbot.volume.VolumeController;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -24,16 +24,16 @@ public class SlashCommandReaction extends ListenerAdapter {
                 event.reply("포동봇의 핑: " + ping + "ms").queue();
                 break;
             case "볼륨":
-                VolumeControl.handleVolumeCommand(event);
+                VolumeController.handleVolumeCommand(event);
                 break;
             case "채널설정":
                 ChannelManager.handleChannelSetupCommand(event);
                 break;
             case "입장":
-                BotVoiceControl.joinVoiceChannel(event);
+                VoiceController.joinVoiceChannel(event);
                 break;
             case "퇴장":
-                BotVoiceControl.leaveVoiceChannel(event);
+                VoiceController.leaveVoiceChannel(event);
                 break;
             case "대기열":
                 PlayerManager.handleQueueCommand(event);

@@ -7,14 +7,12 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import discord.podongbot.music.PlayerManager;
 
-import javax.swing.text.TabExpander;
-
 // 음악 볼륨을 조절하는 클래스
-public class VolumeControl {
+public class VolumeController {
     private final AudioPlayer audioPlayer;
     private int volume; // 볼륨 (0~100 범위)
 
-    public VolumeControl(AudioPlayer audioPlayer) {
+    public VolumeController(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
         this.volume = 100; // 기본 볼륨 100%
         this.audioPlayer.setVolume(this.volume);
@@ -27,7 +25,7 @@ public class VolumeControl {
         this.audioPlayer.setVolume(volume);
     }
 
-    public static VolumeControl getVolumeControl(Guild guild, TextChannel textChannel) {
+    public static VolumeController getVolumeControl(Guild guild, TextChannel textChannel) {
         GuildMusicManager musicManager = PlayerManager.getINSTANCE().getMusicManager(guild, textChannel);
         return musicManager.getVolumeControl();
     }
@@ -52,7 +50,7 @@ public class VolumeControl {
             return;
         }
 
-        VolumeControl volumeControl = getVolumeControl(guild, textChannel);
+        VolumeController volumeControl = getVolumeControl(guild, textChannel);
         volumeControl.setVolume(volume);
         event.reply("볼륨이 " + volume + "%로 설정되었습니다.").queue();
     }
