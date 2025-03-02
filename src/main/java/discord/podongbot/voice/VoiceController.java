@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
 
-public class BotVoiceControl {
+public class BotVoiceController {
 
     public static void joinVoiceChannel(SlashCommandInteractionEvent event) {
         Member member = event.getMember();
