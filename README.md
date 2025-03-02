@@ -1,9 +1,6 @@
 # 🎵 포동봇 (PodongBot) - Discord 음악 봇
 
-<img src="https://github.com/user-attachments/assets/5610dd4a-2952-40dd-9bee-55b4038d29e9" width="100px" height="100px">
-![image](https://github.com/user-attachments/assets/5610dd4a-2952-40dd-9bee-55b4038d29e9)
-<img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=Java&logoColor=white">
-
+<img src="https://github.com/user-attachments/assets/5610dd4a-2952-40dd-9bee-55b4038d29e9" width="500px" height="500px">
 
 ## 🚀 소개
 **포동봇(PodongBot)**은 Discord에서 **음악을 재생**할 수 있는 Java 기반의 **고품질 음악 봇**입니다.  
