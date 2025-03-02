@@ -2,7 +2,7 @@ package discord.podongbot.music;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import discord.podongbot.volume.VolumeControl;
+import discord.podongbot.volume.VolumeController;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
@@ -11,7 +11,7 @@ public class GuildMusicManager {
     public final AudioPlayer audioPlayer;
     public final TrackScheduler scheduler;
     private final AudioPlayerSendHandler sendHandler;
-    private final VolumeControl volumeControl;
+    private final VolumeController volumeControl;
 
     public GuildMusicManager(AudioPlayerManager manager, Guild guild, TextChannel textChannel) {
         this.audioPlayer = manager.createPlayer();
@@ -19,7 +19,7 @@ public class GuildMusicManager {
         this.audioPlayer.addListener(this.scheduler);
         this.scheduler.setTextChannel(textChannel);
         this.sendHandler = new AudioPlayerSendHandler(this.audioPlayer);
-        this.volumeControl = new VolumeControl(this.audioPlayer);
+        this.volumeControl = new VolumeController(this.audioPlayer);
 
         // 기본 볼륨을 강제로 20%로 설정
         this.audioPlayer.setVolume(20);
@@ -29,7 +29,7 @@ public class GuildMusicManager {
         return this.sendHandler;
     }
 
-    public VolumeControl getVolumeControl() {
+    public VolumeController getVolumeControl() {
         return this.volumeControl;
     }
 }

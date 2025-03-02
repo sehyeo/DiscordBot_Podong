@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.entities.Activity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BotActivityManager {
+public class ActivityManager {
 
     public Activity getDefaultActivity() {
         return Activity.playing("봇만들기");

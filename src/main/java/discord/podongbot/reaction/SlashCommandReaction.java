@@ -1,9 +1,10 @@
-package discord.podongbot.response;
+package discord.podongbot.reaction;
 
 import discord.podongbot.channel.ChannelManager;
 import discord.podongbot.music.PlayerManager;
-import discord.podongbot.voice.BotVoiceControl;
-import discord.podongbot.volume.VolumeControl;
+import discord.podongbot.voice.VoiceController;
+import discord.podongbot.volume.VolumeController;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -18,22 +19,39 @@ public class SlashCommandReaction extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        // "포동봇-음악채널"이 존재하는지 확인
+        boolean hasMusicChannel = guild.getTextChannels().stream()
+                .anyMatch(channel -> channel.getName().equalsIgnoreCase("포동봇-음악채널"));
+
+        if (event.getName().equals("채널설정")) {
+            ChannelManager.handleChannelSetupCommand(event);
+            return;
+        }
+
+        if(event.getName().equals("핑")) {
+            long ping = event.getJDA().getGatewayPing(); // 현재 봇의 핑 가져오기
+            event.reply("포동봇의 핑: " + ping + "ms").queue();
+            return;
+        }
+
+        // 음악 채널 생성 필요
+        if (!hasMusicChannel) {
+            event.reply("⚠️ 음악 채널을 생성해주세요! (채널 이름: **포동봇-음악채널**)").queue();
+            return;
+        }
+
         switch(event.getName()) {
-            case "핑":
-                long ping = event.getJDA().getGatewayPing(); // 현재 봇의 핑 가져오기
-                event.reply("포동봇의 핑: " + ping + "ms").queue();
-                break;
             case "볼륨":
-                VolumeControl.handleVolumeCommand(event);
-                break;
-            case "채널설정":
-                ChannelManager.handleChannelSetupCommand(event);
+                VolumeController.handleVolumeCommand(event);
                 break;
             case "입장":
-                BotVoiceControl.joinVoiceChannel(event);
+                VoiceController.joinVoiceChannel(event);
                 break;
             case "퇴장":
-                BotVoiceControl.leaveVoiceChannel(event);
+                VoiceController.leaveVoiceChannel(event);
                 break;
             case "대기열":
                 PlayerManager.handleQueueCommand(event);

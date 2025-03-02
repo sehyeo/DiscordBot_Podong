@@ -1,12 +1,12 @@
 package discord.podongbot;
 
-import discord.podongbot.activity.BotActivityManager;
+import discord.podongbot.activity.ActivityManager;
 import discord.podongbot.channel.ChannelManager;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import discord.podongbot.token.BotTokenManager;
-import discord.podongbot.response.ChattingReaction;
-import discord.podongbot.response.SlashCommandReaction;
+import discord.podongbot.token.TokenManager;
+import discord.podongbot.reaction.ChattingReaction;
+import discord.podongbot.reaction.SlashCommandReaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,10 +19,10 @@ import java.util.EnumSet;
 public class DiscordBot implements CommandLineRunner {
 
     @Autowired
-    private BotTokenManager botTokenManager;
+    private TokenManager botTokenManager;
 
     @Autowired
-    private BotActivityManager botActivityManager;
+    private ActivityManager botActivityManager;
 
     public static void main(String[] args) {
         SpringApplication.run(DiscordBot.class, args);
