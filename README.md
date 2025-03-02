@@ -1,4 +1,3 @@
-# DiscordBot_Podong
 # 🎵 포동봇 (PodongBot) - Discord 음악 봇
 
 ![포동봇](https://img.shields.io/badge/Discord-Music%20Bot-blue?style=flat-square)
