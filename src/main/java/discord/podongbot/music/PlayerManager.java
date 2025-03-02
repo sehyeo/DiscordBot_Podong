@@ -169,7 +169,7 @@ public class PlayerManager {
         List<AudioTrack> queue = musicManager.scheduler.getQueue();
 
         if (queue.isEmpty()) {
-            event.reply("⚠\uFE0F 대기열이 비어 있습니다.").queue();
+            event.reply("⚠️ 대기열이 비어 있습니다.").queue();
             return;
         }
 
@@ -177,7 +177,7 @@ public class PlayerManager {
                 .map(track -> String.format("- **%s** (by %s)", track.getInfo().title, track.getInfo().author))
                 .collect(Collectors.joining("\n"));
 
-        event.reply("현재 대기열:\n" + queueList).queue();
+        event.reply("현재 대기열:\n" + queueList).setEphemeral(true).queue();
     }
 
     // 음악 일시정지

@@ -39,7 +39,8 @@ public class DiscordBot implements CommandLineRunner {
                     GatewayIntent.MESSAGE_CONTENT,
                     GatewayIntent.GUILD_PRESENCES,
                     GatewayIntent.GUILD_MEMBERS,
-                    GatewayIntent.GUILD_VOICE_STATES);
+                    GatewayIntent.GUILD_VOICE_STATES
+            );
 
             JDABuilder.createDefault(token)
                     .enableIntents(intents)
