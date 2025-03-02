@@ -1,9 +1,9 @@
 # 🎵 포동봇 (PodongBot) - Discord 음악 봇
 
-![포동봇](https://img.shields.io/badge/Discord-Music%20Bot-blue?style=flat-square)
-![Java](https://img.shields.io/badge/Java-11-blue?style=flat-square)
-![JDA](https://img.shields.io/badge/JDA-5.0-yellow?style=flat-square)
-![LavaPlayer](https://img.shields.io/badge/LavaPlayer-Audio-red?style=flat-square)
+![Discord](https://img.shields.io/badge/Discord-Music%20Bot-blue?style=for-the-badge&logo=discord)
+![Java](https://img.shields.io/badge/Java-11-orange?style=for-the-badge&logo=oracle)
+![JDA](https://img.shields.io/badge/JDA-5.0-yellow?style=for-the-badge&logo=java)
+![LavaPlayer](https://img.shields.io/badge/LavaPlayer-Audio-red?style=for-the-badge&logo=youtube)
 
 ## 🚀 소개
 **포동봇(PodongBot)**은 Discord에서 **음악을 재생**할 수 있는 Java 기반의 **고품질 음악 봇**입니다.  
