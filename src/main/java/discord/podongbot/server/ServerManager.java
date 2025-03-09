@@ -1,12 +1,9 @@
 package discord.podongbot.server;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
-
-import java.util.List;
 
 public class ServerManager extends ListenerAdapter {
 
@@ -23,16 +20,21 @@ public class ServerManager extends ListenerAdapter {
         String securityLevel = guild.getVerificationLevel().name();
         long serverId = guild.getIdLong();
         String creationTime = guild.getTimeCreated().toString();
+        String serverIcon = guild.getIconUrl();
 
-        String response = "**Test 서버의 정보!**\n"
-                + "\n👑 **서버 주인**\n" + owner
-                + "\n🚀 **서버 부스트**\n" + boostCount + "개"
-                + "\n🔒 **서버 보안 수준**\n" + securityLevel
-                + "\n🆔 **서버 아이디**\n" + serverId
-                + "\n📅 **서버 생성일**\n" + creationTime
-                + "\n🌐 **온라인, 오프라인 멤버 수**\n" + "온라인 " + onlineCount + "명 | 오프라인 " + (memberCount - onlineCount) + "명"
-                + "\n👥 **총 멤버 수**\n" + memberCount + "명";
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setTitle("Test 서버의 정보");
+        if (serverIcon != null) {
+            embed.setThumbnail(serverIcon);
+        }
+        embed.addField("👑 서버 주인", owner, false);
+        embed.addField("🚀 서버 부스트", boostCount + "개", false);
+        embed.addField("🔒 서버 보안 수준", securityLevel, false);
+        embed.addField("🆔 서버 아이디", String.valueOf(serverId), false);
+        embed.addField("📅 서버 생성일", creationTime, false);
+        embed.addField("🌐 온라인, 오프라인 멤버 수", "온라인 " + onlineCount + "명 | 오프라인 " + (memberCount - onlineCount) + "명", false);
+        embed.addField("👥 총 멤버 수", memberCount + "명", false);
 
-        event.reply(response).queue();
+        event.replyEmbeds(embed.build()).queue();
     }
 }

@@ -128,7 +128,7 @@ public class SlashCommandReaction extends ListenerAdapter {
                 Commands.slash("스킵", "현재 재생되고 있는 음악을 스킵합니다.")
         );
         commandDatas.add(
-                Commands.slash("서버정보", "현재 디스코드 서버의 정보를 확인합니다.")
+                Commands.slash("서버정보", "서버의 정보를 확인합니다.")
         );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }
