@@ -2,6 +2,7 @@ package discord.podongbot.reaction;
 
 import discord.podongbot.channel.ChannelManager;
 import discord.podongbot.music.PlayerManager;
+import discord.podongbot.server.ServerManager;
 import discord.podongbot.voice.VoiceController;
 import discord.podongbot.volume.VolumeController;
 import net.dv8tion.jda.api.entities.Guild;
@@ -34,6 +35,11 @@ public class SlashCommandReaction extends ListenerAdapter {
         if(event.getName().equals("핑")) {
             long ping = event.getJDA().getGatewayPing(); // 현재 봇의 핑 가져오기
             event.reply("포동봇의 핑: " + ping + "ms").queue();
+            return;
+        }
+
+        if(event.getName().equals("서버정보")) {
+            ServerManager.handleServerInfoCommand(event);
             return;
         }
 
@@ -120,6 +126,9 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("스킵", "현재 재생되고 있는 음악을 스킵합니다.")
+        );
+        commandDatas.add(
+                Commands.slash("서버정보", "서버의 정보를 확인합니다.")
         );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }

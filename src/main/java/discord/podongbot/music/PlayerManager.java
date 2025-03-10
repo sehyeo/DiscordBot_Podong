@@ -18,14 +18,12 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.stream.Collectors;
 
 // 서버별 GuildMusicManager를 중앙에서 관리
 public class PlayerManager {
     private static PlayerManager INSTANCE;
     private final Map<Long, GuildMusicManager> musicManagers;
     private final AudioPlayerManager audioPlayerManager;
-    private TextChannel textChannel;
 
     private PlayerManager() {
         this.musicManagers = new HashMap<>();
