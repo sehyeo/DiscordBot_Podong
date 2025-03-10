@@ -2,6 +2,7 @@ package discord.podongbot;
 
 import discord.podongbot.activity.ActivityManager;
 import discord.podongbot.channel.ChannelManager;
+import discord.podongbot.help.HelpManager;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import discord.podongbot.token.TokenManager;
@@ -48,7 +49,8 @@ public class DiscordBot implements CommandLineRunner {
                     .addEventListeners(
                             new ChattingReaction(),
                             new SlashCommandReaction(),
-                            new ChannelManager())
+                            new ChannelManager(),
+                            new HelpManager())
                     .build();
 
             System.out.println("⭕ 포동봇 실행 완료!");
