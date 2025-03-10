@@ -37,9 +37,8 @@ public class CleanManager extends ListenerAdapter {
                 channel.purgeMessages(messages);
                 // channel.purgeMessagesById(messageIds); 명령어는 JDA 5.X 버전에서 삭제됨..
 
-                // 메시지 삭제 완료 알림 (3초 후 자동 삭제)
-                event.reply("✅ 최근 " + amount + "개의 메시지를 삭제했습니다.")
-                        .queue(msg -> msg.deleteOriginal().queueAfter(3, TimeUnit.SECONDS));
+                // 메시지 삭제 완료
+                event.reply("✅ 최근 " + amount + "개의 메시지를 삭제했습니다.").setEphemeral(true).queue();
 
             } catch (Exception e) {
                 event.reply("⚠️ 메시지 삭제 중 오류가 발생했습니다.").setEphemeral(true).queue();
