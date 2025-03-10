@@ -13,6 +13,7 @@ public class ServerManager extends ListenerAdapter {
         Guild guild = event.getGuild();
         if (guild == null) return;
 
+        String serverName = guild.getName();
         String owner = guild.getOwner() != null ? guild.getOwner().getEffectiveName() : "알 수 없음";
         int boostCount = guild.getBoostCount();
         int memberCount = guild.getMemberCount();
@@ -23,7 +24,7 @@ public class ServerManager extends ListenerAdapter {
         String serverIcon = guild.getIconUrl();
 
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("Test 서버의 정보");
+        embed.setTitle(serverName + " 서버의 정보");
         if (serverIcon != null) {
             embed.setThumbnail(serverIcon);
         }
