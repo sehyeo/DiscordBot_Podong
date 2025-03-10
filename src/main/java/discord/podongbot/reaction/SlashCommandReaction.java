@@ -2,6 +2,7 @@ package discord.podongbot.reaction;
 
 import discord.podongbot.channel.ChannelManager;
 import discord.podongbot.clean.CleanManager;
+import discord.podongbot.help.HelpManager;
 import discord.podongbot.music.PlayerManager;
 import discord.podongbot.server.ServerManager;
 import discord.podongbot.voice.VoiceController;
@@ -50,6 +51,10 @@ public class SlashCommandReaction extends ListenerAdapter {
             return;
         }
 
+        if(event.getName().equals("도움말")) {
+            HelpManager.handleHelpCommands(event);
+            return;
+        }
 
         // 음악 채널 생성 필요
         if (!hasMusicChannel) {
@@ -141,6 +146,9 @@ public class SlashCommandReaction extends ListenerAdapter {
         commandDatas.add(
                 Commands.slash("청소", "최근 메시지를 삭제합니다.")
                         .addOption(OptionType.INTEGER, "amount", "삭제할 메시지 개수 (최대 100개)", true)
+        );
+        commandDatas.add(
+                Commands.slash("도움말", "사용 가능한 명령어 목록을 확인합니다.")
         );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }
