@@ -58,13 +58,14 @@ public class UserInfoManager extends ListenerAdapter {
         }
 
         User user = member.getUser();
+        String accountType = user.isBot() ? "🤖 봇 계정" : "👤 사람 계정";
 
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("유저 정보")
                 .setColor(Color.BLUE)
                 .setThumbnail(user.getEffectiveAvatarUrl())
                 .addField("👤 유저", "<@" + user.getId() + "> (" + user.getName() + ")", false)
-                .addField("📌 계정 유형", "사람 계정", false)
+                .addField("📌 계정 유형", accountType, false)
                 .addField("🆔 고유 ID", user.getId(), false)
                 .addField("📅 계정 생성", formatTime(user.getTimeCreated()) + " (" + getDuration(user.getTimeCreated()) + ")", false)
                 .addField("👋 서버 입장", formatTime(member.getTimeJoined()) + " (" + getDuration(member.getTimeJoined()) + ")", false);
