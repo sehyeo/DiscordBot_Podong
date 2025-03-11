@@ -7,6 +7,7 @@ import discord.podongbot.music.PlayerManager;
 import discord.podongbot.server.ServerManager;
 import discord.podongbot.voice.VoiceController;
 import discord.podongbot.volume.VolumeController;
+import discord.podongbot.user.UserInfoManager;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -53,6 +54,11 @@ public class SlashCommandReaction extends ListenerAdapter {
 
         if(event.getName().equals("도움말")) {
             HelpManager.handleHelpCommands(event);
+            return;
+        }
+
+        if (event.getName().equals("유저정보")) {
+            UserInfoManager.handleUserListCommand(event);
             return;
         }
 
@@ -149,6 +155,9 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("도움말", "사용 가능한 명령어 목록을 확인합니다.")
+        );
+        commandDatas.add(
+                Commands.slash("유저정보", "서버에 있는 유저 정보를 확인합니다.")
         );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }
