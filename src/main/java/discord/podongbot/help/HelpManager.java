@@ -43,7 +43,6 @@ public class HelpManager extends ListenerAdapter {
                     //.addOption("게임", "game", "게임을 하는 명령어", null)
                     .addOption("관리", "admin", "서버를 관리할 수 있는 명령어", null)
                     //.addOption("일반", "general", "일반 명령어", null)
-                    //.addOption("리더보드", "leaderboard", "리더보드를 확인할 수 있는 명령어", null)
                     .build();
 
             Button noticeButton = Button.success("notice", "📄 공지사항 보기");
@@ -93,12 +92,6 @@ public class HelpManager extends ListenerAdapter {
                     //embed.setColor(Color.MAGENTA);
                     //embed.addField("/날씨", "현재 날씨를 조회합니다", true);
                     //embed.addField("/시간", "현재 시간을 알려줍니다", true);
-                    //break;
-                //case "leaderboard":
-                    //embed.setTitle("🏆 리더보드 명령어");
-                    //embed.setColor(Color.YELLOW);
-                    //embed.addField("/점수", "현재 점수를 확인합니다", true);
-                    //embed.addField("/순위", "랭킹을 확인합니다", true);
                     //break;
                 default:
                     return;

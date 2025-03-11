@@ -55,6 +55,10 @@ dependencies {
 	implementation "org.slf4j:slf4j-api:2.0.9"
 	implementation 'org.springframework.boot:spring-boot-starter-logging'
 
+	// gson 라이브러리 추가
+	implementation 'com.google.code.gson:gson:2.8.9'
+
+
 }
 
 tasks.named('test') {
