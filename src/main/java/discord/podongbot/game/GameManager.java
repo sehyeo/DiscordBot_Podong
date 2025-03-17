@@ -24,7 +24,7 @@ public class GameManager extends ListenerAdapter {
         List<String> options = List.of(input.split("\\s+")).stream()
                 .map(option -> option.replaceAll("[,]", "").trim()) // 쉼표 제거 및 공백 제거
                 .filter(option -> !option.isBlank()) // 빈 값 제거
-                .collect(Collectors.toList());
+                .toList();
 
         if (options.size() < 2) {
             event.reply("⚠️ 두 개 이상의 항목을 입력해주세요! 예: /골라 사과 포도").queue();
