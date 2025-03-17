@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class GameManager extends ListenerAdapter {
 
@@ -19,8 +20,11 @@ public class GameManager extends ListenerAdapter {
             return;
         }
 
-        // 입력된 문자열을 공백 기준으로 분리하여 리스트로 변환
-        List<String> options = List.of(input.split("\\s+"));
+        // 입력된 문자열을 공백 기준으로 분리 후, 쉼표 제거하여 리스트로 변환
+        List<String> options = List.of(input.split("\\s+")).stream()
+                .map(option -> option.replaceAll("[,]", "").trim()) // 쉼표 제거 및 공백 제거
+                .filter(option -> !option.isBlank()) // 빈 값 제거
+                .collect(Collectors.toList());
 
         if (options.size() < 2) {
             event.reply("⚠️ 두 개 이상의 항목을 입력해주세요! 예: /골라 사과 포도").queue();
