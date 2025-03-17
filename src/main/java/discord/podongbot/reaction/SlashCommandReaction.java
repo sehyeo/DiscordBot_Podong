@@ -27,52 +27,6 @@ public class SlashCommandReaction extends ListenerAdapter {
         Guild guild = event.getGuild();
         if (guild == null) return;
 
-        // "포동봇-음악채널"이 존재하는지 확인
-        boolean hasMusicChannel = guild.getTextChannels().stream()
-                .anyMatch(channel -> channel.getName().equalsIgnoreCase("포동봇-음악채널"));
-
-        if (event.getName().equals("채널설정")) {
-            ChannelManager.handleChannelSetupCommand(event);
-            return;
-        }
-
-        if(event.getName().equals("핑")) {
-            long ping = event.getJDA().getGatewayPing(); // 현재 봇의 핑 가져오기
-            event.reply("포동봇의 핑: " + ping + "ms").queue();
-            return;
-        }
-
-        if(event.getName().equals("서버정보")) {
-            ServerManager.handleServerInfoCommand(event);
-            return;
-        }
-
-        if(event.getName().equals("청소")) {
-            int amount = event.getOption("amount").getAsInt();
-            CleanManager.handleChattingCleanCommand(event, amount);
-            return;
-        }
-
-        if(event.getName().equals("도움말")) {
-            HelpManager.handleHelpCommands(event);
-            return;
-        }
-
-        if (event.getName().equals("유저정보")) {
-            UserInfoManager.handleUserListCommand(event);
-            return;
-        }
-
-        if (event.getName().equals("골라")) {
-            GameManager.ChooseCommand(event);
-            return;
-        }
-        // 음악 채널 생성 필요
-        if (!hasMusicChannel) {
-            event.reply("⚠️ 음악 채널을 생성해주세요! (채널 이름: **포동봇-음악채널**)").queue();
-            return;
-        }
-
         switch(event.getName()) {
             case "재생":
                 String trackName = event.getOption("곡이름").getAsString();
@@ -109,6 +63,29 @@ public class SlashCommandReaction extends ListenerAdapter {
                 break;
             case "스킵":
                 PlayerManager.handleSkipCommand(event);
+                break;
+            case "채널설정":
+                ChannelManager.handleChannelSetupCommand(event);
+                break;
+            case "핑":
+                long ping = event.getJDA().getGatewayPing();
+                event.reply("포동봇의 핑: " + ping + "ms").queue();
+                break;
+            case "서버정보":
+                ServerManager.handleServerInfoCommand(event);
+                break;
+            case "청소":
+                int amount = event.getOption("amount").getAsInt();
+                CleanManager.handleChattingCleanCommand(event, amount);
+                break;
+            case "도움말":
+                HelpManager.handleHelpCommands(event);
+                break;
+            case "유저정보":
+                UserInfoManager.handleUserListCommand(event);
+                break;
+            case "골라":
+                GameManager.ChooseCommand(event);
                 break;
         }
     }
