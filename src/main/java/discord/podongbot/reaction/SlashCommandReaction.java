@@ -74,6 +74,10 @@ public class SlashCommandReaction extends ListenerAdapter {
         }
 
         switch(event.getName()) {
+            case "재생":
+                String trackName = event.getOption("곡이름").getAsString();
+                PlayerManager.handlePlayCommand(event, trackName);
+                break;
             case "볼륨":
                 VolumeController.handleVolumeCommand(event);
                 break;
@@ -127,6 +131,10 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("퇴장", "봇을 현재 음성 채널에서 퇴장시킵니다.")
+        );
+        commandDatas.add(
+                Commands.slash("재생", "입력한 곡을 검색하여 재생합니다.")
+                        .addOption(OptionType.STRING, "곡이름", "검색할 노래 제목을 입력하세요.", true)
         );
         commandDatas.add(
                 Commands.slash("대기열", "현재 대기열을 보여줍니다.")
