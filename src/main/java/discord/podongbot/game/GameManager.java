@@ -1,0 +1,40 @@
+package discord.podongbot.game;
+
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class GameManager extends ListenerAdapter {
+
+    private static final Random random = new Random();
+
+    public static void ChooseCommand(SlashCommandInteractionEvent event) {
+        if (!event.getName().equals("골라")) return;
+
+        String input = event.getOption("options").getAsString();
+        if (input.isBlank()) {
+            event.reply("⚠️ 선택할 항목을 입력해주세요! 예: /골라 사과 포도 바나나").queue();
+            return;
+        }
+
+        // 입력된 문자열을 공백 기준으로 분리 후, 쉼표 제거하여 리스트로 변환
+        List<String> options = Stream.of(input.split("\\s+"))
+                .map(option -> option.replaceAll("[,]", "").trim()) // 쉼표 제거 및 공백 제거
+                .filter(option -> !option.isBlank()) // 빈 값 제거
+                .toList();
+
+        if (options.size() < 2) {
+            event.reply("⚠️ 두 개 이상의 항목을 입력해주세요! 예: /골라 사과 포도").queue();
+            return;
+        }
+
+        // 랜덤으로 하나 선택
+        String chosen = options.get(random.nextInt(options.size()));
+
+        event.reply("🎲 선택된 항목: **" + chosen + "**").queue();
+    }
+}
