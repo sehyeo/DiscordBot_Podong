@@ -15,7 +15,7 @@ public class GameManager extends ListenerAdapter {
         if (!event.getName().equals("골라")) return;
 
         String input = event.getOption("options").getAsString();
-        if (input == null || input.isBlank()) {
+        if (input.isBlank()) {
             event.reply("⚠️ 선택할 항목을 입력해주세요! 예: /골라 사과 포도 바나나").queue();
             return;
         }
