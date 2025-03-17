@@ -2,6 +2,7 @@ package discord.podongbot.reaction;
 
 import discord.podongbot.channel.ChannelManager;
 import discord.podongbot.clean.CleanManager;
+import discord.podongbot.game.GameManager;
 import discord.podongbot.help.HelpManager;
 import discord.podongbot.music.PlayerManager;
 import discord.podongbot.server.ServerManager;
@@ -62,6 +63,10 @@ public class SlashCommandReaction extends ListenerAdapter {
             return;
         }
 
+        if (event.getName().equals("골라")) {
+            GameManager.ChooseCommand(event);
+            return;
+        }
         // 음악 채널 생성 필요
         if (!hasMusicChannel) {
             event.reply("⚠️ 음악 채널을 생성해주세요! (채널 이름: **포동봇-음악채널**)").queue();
@@ -158,6 +163,10 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("유저정보", "서버에 있는 유저 정보를 확인합니다.")
+        );
+        commandDatas.add(
+                Commands.slash("골라", "입력한 항목 중 하나를 랜덤으로 선택합니다.")
+                        .addOption(OptionType.STRING, "options", "선택할 항목들을 쉼표(,)로 구분하여 입력", true)
         );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }
