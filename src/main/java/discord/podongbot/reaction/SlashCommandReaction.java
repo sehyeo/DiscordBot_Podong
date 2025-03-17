@@ -51,14 +51,14 @@ public class SlashCommandReaction extends ListenerAdapter {
                 PlayerManager.handleStopCommand(event);
                 break;
             case "반복":
-                int mode = event.getOption("mode").getAsInt();
+                int mode = event.getOption("모드").getAsInt();
                 PlayerManager.handleRepeatCommand(event, mode);
                 break;
             case "셔플":
                 PlayerManager.handleShuffleCommand(event);
                 break;
             case "삭제":
-                int index = event.getOption("index").getAsInt();
+                int index = event.getOption("번호").getAsInt();
                 PlayerManager.handleRemoveCommand(event, index);
                 break;
             case "스킵":
@@ -75,7 +75,7 @@ public class SlashCommandReaction extends ListenerAdapter {
                 ServerManager.handleServerInfoCommand(event);
                 break;
             case "청소":
-                int amount = event.getOption("amount").getAsInt();
+                int amount = event.getOption("개수").getAsInt();
                 CleanManager.handleChattingCleanCommand(event, amount);
                 break;
             case "도움말":
@@ -98,7 +98,7 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("볼륨", "포동봇의 볼륨을 조절합니다.")
-                        .addOption(OptionType.INTEGER, "value", "설정할 볼륨 크기 (0~100)", true)
+                        .addOption(OptionType.INTEGER, "크기", "설정할 볼륨 크기 (0~100)", true)
         );
         commandDatas.add(
                 Commands.slash("채널설정", "포동봇 전용 채널을 설정합니다.")
@@ -124,14 +124,14 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("반복", "반복 모드를 설정합니다.")
-                        .addOption(OptionType.INTEGER, "mode", "반복 모드 (0: 반복 없음, 1: 현재 트랙 반복, 2: 대기열 전체 반복)", true)
+                        .addOption(OptionType.INTEGER, "모드", "반복 모드 (0: 반복 없음, 1: 현재 트랙 반복, 2: 대기열 전체 반복)", true)
         );
         commandDatas.add(
                 Commands.slash("셔플", "모든 곡의 순서를 섞습니다.")
         );
         commandDatas.add(
                 Commands.slash("삭제", "대기열에서 특정 곡을 삭제합니다.")
-                        .addOption(OptionType.INTEGER, "index", "삭제할 곡의 순서 (1부터 시작)", true)
+                        .addOption(OptionType.INTEGER, "번호", "삭제할 곡의 순서 (1부터 시작)", true)
         );
         commandDatas.add(
                 Commands.slash("스킵", "현재 재생되고 있는 음악을 스킵합니다.")
@@ -141,7 +141,7 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("청소", "최근 메시지를 삭제합니다.")
-                        .addOption(OptionType.INTEGER, "amount", "삭제할 메시지 개수 (최대 100개)", true)
+                        .addOption(OptionType.INTEGER, "개수", "삭제할 메시지 개수 (최대 100개)", true)
         );
         commandDatas.add(
                 Commands.slash("도움말", "사용 가능한 명령어 목록을 확인합니다.")
