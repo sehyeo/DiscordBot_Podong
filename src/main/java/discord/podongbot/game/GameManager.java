@@ -15,15 +15,15 @@ public class GameManager extends ListenerAdapter {
 
         String input = event.getOption("options").getAsString();
         if (input == null || input.isBlank()) {
-            event.reply("⚠️ 선택할 항목을 입력해주세요! 예: /골라 사과, 포도").queue();
+            event.reply("⚠️ 선택할 항목을 입력해주세요! 예: /골라 사과 포도 바나나").queue();
             return;
         }
 
-        // 입력된 문자열을 ',' 기준으로 분리하여 리스트로 변환
-        List<String> options = List.of(input.split(",\s*"));
+        // 입력된 문자열을 공백 기준으로 분리하여 리스트로 변환
+        List<String> options = List.of(input.split("\\s+"));
 
         if (options.size() < 2) {
-            event.reply("⚠️ 두 개 이상의 항목을 입력해주세요! 예: /골라 사과, 포도").queue();
+            event.reply("⚠️ 두 개 이상의 항목을 입력해주세요! 예: /골라 사과 포도").queue();
             return;
         }
 

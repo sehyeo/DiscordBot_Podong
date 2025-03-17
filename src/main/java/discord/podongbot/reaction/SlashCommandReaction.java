@@ -166,7 +166,7 @@ public class SlashCommandReaction extends ListenerAdapter {
         );
         commandDatas.add(
                 Commands.slash("골라", "입력한 항목 중 하나를 랜덤으로 선택합니다.")
-                        .addOption(OptionType.STRING, "options", "선택할 항목들을 쉼표(,)로 구분하여 입력", true)
+                        .addOption(OptionType.STRING, "options", "선택할 항목들을 공백으로 구분하여 입력", true)
         );
         event.getGuild().updateCommands().addCommands(commandDatas).queue();
     }
