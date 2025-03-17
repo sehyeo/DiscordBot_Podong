@@ -118,6 +118,7 @@ public class PlayerManager {
         });
     }
 
+    // 전용채널 내에서 곡이름만 입력하여 재생
     public static void handleAutoPlayMusic(MessageReceivedEvent event) {
         Guild guild = event.getGuild();
         if (guild == null) return;
@@ -155,6 +156,32 @@ public class PlayerManager {
         }
         String link = "ytsearch: " + musicQuery;
         PlayerManager.getINSTANCE().loadAndPlay(event.getChannel().asTextChannel(), link);
+    }
+
+    // 슬래시 명령어 사용하여 음악 재생
+    public static void handlePlayCommand(SlashCommandInteractionEvent event, String trackName) {
+        Guild guild = event.getGuild();
+        if (guild == null) return;
+
+        TextChannel textChannel = event.getChannel().asTextChannel();
+
+        // 사용자가 음성 채널에 있는지 확인
+        if (!event.getMember().getVoiceState().inAudioChannel()) {
+            event.reply("⚠️ 음성 채널에 먼저 접속해주세요!").queue();
+            return;
+        }
+
+        event.deferReply().queue();  // 응답을 지연 처리
+
+        // 봇이 음성 채널에 없으면 자동으로 연결
+        if (!guild.getAudioManager().isConnected()) {
+            VoiceChannel userChannel = (VoiceChannel) event.getMember().getVoiceState().getChannel();
+            guild.getAudioManager().openAudioConnection(userChannel);
+        }
+
+        String link = "ytsearch: " + trackName;
+        PlayerManager.getINSTANCE().loadAndPlay(textChannel, link);
+        event.getHook().deleteOriginal().queue(); // 응답 업데이트
     }
 
     // 대기열 관리
