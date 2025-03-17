@@ -12,17 +12,15 @@ public class GameManager extends ListenerAdapter {
 
     private static final Random random = new Random();
 
-    public static void ChooseCommand(SlashCommandInteractionEvent event) {
-        if (!event.getName().equals("골라")) return;
+    public static void ChooseCommand(SlashCommandInteractionEvent event, String inputList) {
 
-        String input = event.getOption("options").getAsString();
-        if (input.isBlank()) {
+        if (inputList.isBlank()) {
             event.reply("⚠️ 선택할 항목을 입력해주세요! 예: /골라 사과 포도 바나나").queue();
             return;
         }
 
         // 입력된 문자열을 공백 기준으로 분리 후, 쉼표 제거하여 리스트로 변환
-        List<String> options = Stream.of(input.split("\\s+"))
+        List<String> options = Stream.of(inputList.split("\\s+"))
                 .map(option -> option.replaceAll("[,]", "").trim()) // 쉼표 제거 및 공백 제거
                 .filter(option -> !option.isBlank()) // 빈 값 제거
                 .toList();
